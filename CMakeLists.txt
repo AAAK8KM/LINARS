@@ -5,7 +5,7 @@ project( LINARS  LANGUAGES CXX)
 # ----------------------------------------------
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-set(TARGET_CXX_STANDARD cxx_std_17)
+set(TARGET_CXX_STANDARD cxx_std_20)
 #Additional compile flags only for this project
 if(MSVC)
         set(COMPILE_FLAGS /W4 /WX /permissive-)
@@ -15,7 +15,7 @@ endif()
 
 add_custom_target(mtest ALL
     COMMAND ${CMAKE_CTEST_COMMAND}
-    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/test
     COMMENT "Running CTest suite"
     VERBATIM 
 )

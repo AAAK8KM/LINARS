@@ -1,4 +1,4 @@
-#define Dmatrix
+#define Dm3diag
 
 #include "matrix.hpp"
 

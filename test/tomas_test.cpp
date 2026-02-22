@@ -37,7 +37,7 @@ void check(std::size_t N, std::size_t k)
                 d+=std::max(std::abs(A.ge(j-1, j)),std::abs(A.ge(j, j-1)));
             d+=dist(rng)/3;
             A.ge(j, j)=d;
-            b.ge(j,1)=dist(rng)*dist(rng);
+            b.ge(j,0)=dist(rng)*dist(rng);
         }
         res=TomasSolver<dtype>::Solve(A, b);
         if (A*res!=b)

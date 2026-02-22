@@ -18,7 +18,12 @@ target_compile_features(mulTest PRIVATE ${TARGET_CXX_STANDARD})
 
 add_executable( tomasTest tomas_test.cpp)
 target_link_libraries(tomasTest MATRIX TOMAS)
+target_compile_options(tomasTest PRIVATE -O3)
 target_compile_features(tomasTest PRIVATE ${TARGET_CXX_STANDARD})
+
+add_executable( itTest it_test.cpp)
+target_link_libraries(itTest MATRIX)
+target_compile_features(itTest PRIVATE ${TARGET_CXX_STANDARD})
 
 set(TDEPS basicIOTest mulTest tomasTest)
 

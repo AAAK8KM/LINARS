@@ -3,5 +3,6 @@
 
 #include "imatrix.hpp"
 #include "m3diag.hpp"
+#include "mdoc.hpp"
 
 #endif

@@ -20,7 +20,7 @@ if(BUILD_SHARED_LIBS)
     target_compile_options(M3DIAG PRIVATE ${COMPILE_FLAGS})
 endif()
 
-add_library(MATRIX matrix.cpp m3diag.cpp)
+add_library(MATRIX matrix.cpp m3diag.cpp mdoc.cpp)
 target_compile_definitions(MATRIX PUBLIC MATRIX)
 target_compile_features(MATRIX PRIVATE ${TARGET_CXX_STANDARD})
 target_compile_options(MATRIX PRIVATE ${COMPILE_FLAGS})
