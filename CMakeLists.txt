@@ -1,16 +1,17 @@
 cmake_minimum_required(VERSION 3.7)
 project( LINARS  LANGUAGES CXX)
-set (CMAKE_GENERATOR "Unix Makefiles" CACHE INTERNAL "" FORCE)
 
 # Set standarts
 # ----------------------------------------------
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(CMAKE_CXX_STANDARD 17)
-add_compile_options(-Wall -Wextra -Wpedantic -O2)
 
-# got to the code stuff
-include(./src/CMakeLists.txt)
-include(./test/CMakeLists.txt)
+set(TARGET_CXX_STANDARD cxx_std_17)
+#Additional compile flags only for this project
+if(MSVC)
+        set(COMPILE_FLAGS /W4 /WX /permissive-)
+elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang|AppleClang|Intel")
+    set(COMPILE_FLAGS -Wall -Wextra -Wpedantic -Wshadow -Wconversion -Wsign-conversion -Werror)
+endif()
 
 add_custom_target(mtest ALL
     COMMAND ${CMAKE_CTEST_COMMAND}
@@ -18,4 +19,7 @@ add_custom_target(mtest ALL
     COMMENT "Running CTest suite"
     VERBATIM 
 )
-add_dependencies(mtest ${TDEPS})
+
+# got to the code stuff
+add_subdirectory(src)
+add_subdirectory(test)

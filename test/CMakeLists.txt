@@ -1,8 +1,7 @@
-set(TMP ${CMAKE_CURRENT_SOURCE_DIR})
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../src)
 
-set(CMAKE_CURRENT_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/test)
+#set(CMAKE_CURRENT_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/test)
 
 
 message("${CMAKE_CURRENT_SOURCE_DIR}")
@@ -11,13 +10,15 @@ message("${CMAKE_CURRENT_SOURCE_DIR}")
 
 add_executable( basicIOTest ${CMAKE_CURRENT_SOURCE_DIR}/basic_io_test.cpp)
 target_link_libraries(basicIOTest MATRIX)
+target_compile_features(basicIOTest PRIVATE ${TARGET_CXX_STANDARD})
 
 add_executable( mulTest ${CMAKE_CURRENT_SOURCE_DIR}/mul_test.cpp)
 target_link_libraries(mulTest MATRIX)
-
+target_compile_features(mulTest PRIVATE ${TARGET_CXX_STANDARD})
 
 add_executable( tomasTest ${CMAKE_CURRENT_SOURCE_DIR}/tomas_test.cpp)
 target_link_libraries(tomasTest MATRIX TOMAS)
+target_compile_features(tomasTest PRIVATE ${TARGET_CXX_STANDARD})
 
 set(TDEPS basicIOTest mulTest tomasTest)
 
@@ -61,4 +62,4 @@ foreach(config IN LISTS TEST_CONFIGS)
     )
 endforeach()
 
-set(CMAKE_CURRENT_SOURCE_DIR  ${TMP})
+add_dependencies(mtest ${TDEPS})
