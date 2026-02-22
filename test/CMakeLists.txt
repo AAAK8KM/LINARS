@@ -1,42 +1,42 @@
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../include)
+include_directories(../include)
 
-#set(CMAKE_CURRENT_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/test)
+#set(CMAKE_CURRENT_SOURCE_DIR test)
 
 
 message("${CMAKE_CURRENT_SOURCE_DIR}")
 # Build local libraries
 # ----------------------------------------------
 
-add_executable( basicIOTest ${CMAKE_CURRENT_SOURCE_DIR}/basic_io_test.cpp)
+add_executable( basicIOTest basic_io_test.cpp)
 target_link_libraries(basicIOTest MATRIX)
 target_compile_features(basicIOTest PRIVATE ${TARGET_CXX_STANDARD})
 
-add_executable( mulTest ${CMAKE_CURRENT_SOURCE_DIR}/mul_test.cpp)
+add_executable( mulTest mul_test.cpp)
 target_link_libraries(mulTest MATRIX)
 target_compile_features(mulTest PRIVATE ${TARGET_CXX_STANDARD})
 
-add_executable( tomasTest ${CMAKE_CURRENT_SOURCE_DIR}/tomas_test.cpp)
+add_executable( tomasTest tomas_test.cpp)
 target_link_libraries(tomasTest MATRIX TOMAS)
 target_compile_features(tomasTest PRIVATE ${TARGET_CXX_STANDARD})
 
 set(TDEPS basicIOTest mulTest tomasTest)
 
 set(TEST_CONFIGS
-    "basicIOTest d ${CMAKE_CURRENT_SOURCE_DIR}/test/io1"
-    "basicIOTest d ${CMAKE_CURRENT_SOURCE_DIR}/test/io2"
-    "basicIOTest d ${CMAKE_CURRENT_SOURCE_DIR}/test/io3"
-    "basicIOTest d ${CMAKE_CURRENT_SOURCE_DIR}/test/io4"
-    "basicIOTest f ${CMAKE_CURRENT_SOURCE_DIR}/test/io1"
-    "basicIOTest f ${CMAKE_CURRENT_SOURCE_DIR}/test/io2"
-    "basicIOTest f ${CMAKE_CURRENT_SOURCE_DIR}/test/io3"
-    "basicIOTest f ${CMAKE_CURRENT_SOURCE_DIR}/test/io4"
-    "mulTest d ${CMAKE_CURRENT_SOURCE_DIR}/test/mul1"
-    "mulTest d ${CMAKE_CURRENT_SOURCE_DIR}/test/mul2"
-    "mulTest d ${CMAKE_CURRENT_SOURCE_DIR}/test/mul3"
-    "mulTest f ${CMAKE_CURRENT_SOURCE_DIR}/test/mul1"
-    "mulTest f ${CMAKE_CURRENT_SOURCE_DIR}/test/mul2"
-    "mulTest f ${CMAKE_CURRENT_SOURCE_DIR}/test/mul3"
+    "basicIOTest d test/io1"
+    "basicIOTest d test/io2"
+    "basicIOTest d test/io3"
+    "basicIOTest d test/io4"
+    "basicIOTest f test/io1"
+    "basicIOTest f test/io2"
+    "basicIOTest f test/io3"
+    "basicIOTest f test/io4"
+    "mulTest d test/mul1"
+    "mulTest d test/mul2"
+    "mulTest d test/mul3"
+    "mulTest f test/mul1"
+    "mulTest f test/mul2"
+    "mulTest f test/mul3"
     "tomasTest d 10 10"
     "tomasTest d 100 100"
     "tomasTest d 1000 100"

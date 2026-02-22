@@ -1,0 +1,138 @@
+#ifndef imatrix_hpp__
+#define imatrix_hpp__
+
+#include <cassert>
+#include <cstddef>
+#include <cstdint>
+#include <cstdlib>
+#include <iostream>
+#include <limits>
+#include <ostream>
+#include <stdexcept>
+#include <utility>
+#include <vector>
+
+template<typename dtype>
+class Matrix;
+
+
+template<typename dtype>
+class Imatrix
+{
+    public:
+        virtual dtype& ge(const std::uint32_t i, const std::uint32_t j) = 0;
+        virtual const dtype& ge(const std::uint32_t i, const std::uint32_t j) const = 0;
+        
+        virtual dtype gev(const std::uint32_t i, const std::uint32_t j) const = 0;
+
+        inline virtual const std::pair<std::uint32_t, std::uint32_t> size() const = 0;
+        //virtual dtype det();//later
+
+        virtual Matrix<dtype> operator*(const Imatrix& B) const
+        {
+            if (this->size().second!=B.size().first) throw std::runtime_error("Matrixes has worng sizes. Can not multiply!");
+            Matrix<dtype> C(this->size().first,B.size().second);
+            for (std::uint32_t i=0;i<this->size().first;i++)
+                for (std::uint32_t j=0;j<B.size().second;j++)
+                    for (std::uint32_t k=0;k<this->size().first;k++)
+                        C.ge(i, j)+=this->gev(i, k)*B.gev(k, j);
+            return C;
+        }
+
+        bool operator==(const Imatrix& B) const
+        {
+            if (this->size().second!=B.size().second) return false;
+            if (this->size().first!=B.size().first) return false;
+
+            for (std::uint32_t i=0;i<this->size().first;i++)
+                for (std::uint32_t j=0;j<this->size().second;j++)
+                    if (std::abs(this->gev(i,j)-B.gev(i, j))>1e-9)
+                        return false;
+            return true;
+        }
+
+        bool operator!=(const Imatrix& B) const
+        {
+            return !(*this==B);
+        }
+};
+
+// To do later
+/*template<typename dtype, std::size_t N, std::size_t M>
+class Imatrixf
+{
+    inline const std::pair<std::size_t, std::size_t> size() {return std::make_pair(N, M);}
+};*/
+
+template<typename dtype>
+class Matrix: public Imatrix<dtype>
+{
+    private:
+        std::vector<dtype> data;
+        std::uint32_t n,m;
+    public:
+        Matrix(){}
+        Matrix(std::uint32_t n_, std::uint32_t m_):data(n_*m_,0),n(n_),m(m_){}
+        Matrix(std::pair<std::uint32_t, std::uint32_t> s):Matrix(s.first,s.second){}
+        Matrix(Imatrix<dtype>& M){
+            auto p=M.size();
+
+            this->n=static_cast<std::uint32_t>(p.first);
+            this->m=static_cast<std::uint32_t>(p.second);
+
+            this->data.resize(m*n);
+
+            for (std::uint32_t i=0;i<p.first;i++)
+                for (std::uint32_t j=0;j<p.second;j++)
+                    this->data[static_cast<std::size_t>(i)*p.second+j]=M.gev(i, j);
+                
+        }
+
+        Matrix(Matrix& M):data(M.data),n(M.n),m(M.m){}
+        Matrix& operator=(const Matrix& M)
+        {
+            this->data=M.data;
+            this->n=M.n;
+            this->m=M.m;
+            return *this;
+        }
+        Matrix(Matrix&& M)
+        {
+            this->data=std::move(M.data);
+            this->n=std::move(M.n);
+            this->m=std::move(M.m);
+        };
+        Matrix& operator=(const Matrix&& M)
+        {
+            this->data=std::move(M.data);
+            this->n=std::move(M.n);
+            this->m=std::move(M.m);
+            return *this;
+        }
+
+        dtype& ge(const std::uint32_t i, const std::uint32_t j)
+        {
+            return data[static_cast<std::size_t>(i)*m+j];
+        };
+
+        const dtype& ge(const std::uint32_t i, const std::uint32_t j) const
+                {
+            return data[static_cast<std::size_t>(i)*m+j];
+        };
+        
+        dtype gev(const std::uint32_t i, const std::uint32_t j) const
+        {
+            return data[static_cast<std::size_t>(i)*m+j];
+        };
+
+        inline const std::pair<std::uint32_t, std::uint32_t> size() const {return std::make_pair(n, m);};
+
+        ~Matrix(){};
+};
+
+#ifndef Dmatrix
+extern template class Matrix<double>;
+extern template class Matrix<float>;
+#endif
+
+#endif
