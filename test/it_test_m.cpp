@@ -1,6 +1,9 @@
 #include "imatrix.hpp"
 #include "m3diag.hpp"
+#include "mdok.hpp"
+#include "types.hpp"
 #include <iostream>
+#include <ostream>
 #include <utility>
 
 
@@ -14,6 +17,7 @@ int main()
     {
         std::cout<<i<<" "<<j<<" "<<c<<std::endl;
     }
+    std::cout<<std::endl;
     M3diag<double> A2(3);
     A2.ge(0,0)=1;
     A2.ge(0,1)=2;
@@ -25,4 +29,11 @@ int main()
     {
         std::cout<<i<<" "<<j<<" "<<c<<std::endl;
     }
+    MDOK<double> A3(A2);
+    std::cout<<std::endl;
+    for (auto [i,j,c] : A3)
+    {
+        std::cout<<i<<" "<<j<<" "<<c<<std::endl;
+    }
+
 }

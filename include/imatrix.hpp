@@ -4,9 +4,6 @@
 #include <cassert>
 #include <cstddef>
 #include <cstdint>
-#include <cstdlib>
-#include <iterator>
-#include <memory>
 #include <stdexcept>
 #include <tuple>
 #include <utility>
@@ -23,10 +20,13 @@ class IIterator{
         virtual std::tuple<uint32_t,uint32_t,dtype> operator*() = 0;
         virtual void operator++()=0;
         //virtual bool operator!=(const IIterator& it) const = 0;  
-};
+}; 
+
+template<typename dtype,typename T>
+concept IsMatrix = std::is_base_of_v<IMatrix<dtype>, T>;
 
 template<typename dtype>
-class IMatrix: public std::enable_shared_from_this<IMatrix<dtype>>
+class IMatrix
 {
     protected:
     const IMatrix<dtype>* get_ptr() const{
@@ -69,11 +69,22 @@ class IMatrix: public std::enable_shared_from_this<IMatrix<dtype>>
         }
 
         template<typename T>
-        friend class IIterator;        
+        friend class IIterator;
+
+        virtual ~IMatrix(){}
 };
 
-template<typename dtype,typename T>
-concept IsMatrix = std::is_base_of_v<IMatrix<dtype>, T>;
+
+template<typename dtype,typename  Mtype>
+requires IsMatrix<dtype, Mtype>
+Vector<dtype> operator*(const Mtype& A,const Vector<dtype>& B)
+{
+    if (A.size().second!=B.size().first) throw std::runtime_error("Matrix and vector has worng sizes. Can not multiply!");
+    Vector<dtype> C(B.size());
+    for (auto [i,j,c]: A)
+        C[i]+=c*B[j];
+    return C;
+}
 
 template<typename dtype>
 class Vector: public IMatrix<dtype>
@@ -83,8 +94,10 @@ class Vector: public IMatrix<dtype>
         std::vector<dtype> data;
     public:
         Vector(){}
-        Vector(uint32_t n_, bool t):transp(t),data(n_,0){}
-        Vector(std::vector<dtype> v, bool t):transp(t),data(v){}
+        Vector(uint32_t n_, bool t=0):transp(t),data(n_,0){}
+        Vector(std::pair<uint32_t, uint32_t> s):transp(s.first<s.second),data(s.first<s.second?s.second:s.first)
+        {if ((s.first>s.second?s.second:s.first)!=1) throw std::runtime_error("Wrong vector size to create!");}
+        Vector(std::vector<dtype> v, bool t=0):transp(t),data(v){}
         Vector(IMatrix<dtype>& M){
             auto p=M.size();
             if (p.second!=1 && p.first!=1) throw std::runtime_error("Too big mstrix to become vector");
@@ -113,6 +126,9 @@ class Vector: public IMatrix<dtype>
             return rhs;
         }
 
+        template<typename  T>
+        friend Vector<T> operator*(const T& lhs, const Vector<T>& rhs);
+
         Vector operator+(Vector &rhs) const
         {
             if (this->transp!=rhs.transp) throw std::runtime_error("Vectors with different state");
@@ -125,7 +141,7 @@ class Vector: public IMatrix<dtype>
         dtype operator*(Vector &rhs)
         {
             if (this->transp==1 && rhs.transp==0) throw std::runtime_error("Vectors multiplication wrong usage");
-            if (this->data.size()!=rhs.data.data()) throw std::runtime_error("Vectors with different size can not be multiplied");
+            if (this->data.size()!=rhs.data.size()) throw std::runtime_error("Vectors with different size can not be multiplied");
             dtype res=0;
             for (uint32_t i=0;i<data.size();i++)
                 res+=this->data[i]*rhs.data[i];
@@ -151,11 +167,11 @@ class Vector: public IMatrix<dtype>
         dtype& ge(const uint32_t i, const uint32_t j)
         {
             if (!transp){
-                if (j!=1) throw std::runtime_error("Wrong vector usage");
+                if (j!=0) throw std::runtime_error("Wrong vector usage");
                 return data[i];
             }
             else {
-                if (i!=1) throw std::runtime_error("Wrong vector usage");
+                if (i!=0) throw std::runtime_error("Wrong vector usage");
                 return data[j];
             }
         };
@@ -163,11 +179,11 @@ class Vector: public IMatrix<dtype>
         const dtype& ge(const uint32_t i, const uint32_t j) const
         {
             if (!transp){
-                if (j!=1) throw std::runtime_error("Wrong vector usage");
+                if (j!=0) throw std::runtime_error("Wrong vector usage");
                 return data[i];
             }
             else {
-                if (i!=1) throw std::runtime_error("Wrong vector usage");
+                if (i!=0) throw std::runtime_error("Wrong vector usage");
                 return data[j];
             }
         };
@@ -175,17 +191,27 @@ class Vector: public IMatrix<dtype>
         dtype gev(const uint32_t i, const uint32_t j) const
         {
             if (!transp){
-                if (j!=1) throw std::runtime_error("Wrong vector usage");
+                if (j!=0) throw std::runtime_error("Wrong vector usage");
                 return data[i];
             }
             else {
-                if (i!=1) throw std::runtime_error("Wrong vector usage");
+                if (i!=0) throw std::runtime_error("Wrong vector usage");
                 return data[j];
             }
         };
 
+        dtype& operator[](uint32_t i)
+        {
+            return data[i];
+        }
+
+        const dtype& operator[](uint32_t i) const
+        {
+            return data[i];
+        }
+
         inline const std::pair<uint32_t, uint32_t> size() const {
-            if (transp) return std::make_pair(data.size(), 1);
+            if (!transp) return std::make_pair(data.size(), 1);
             else return std::make_pair(1,data.size());
         };
 
@@ -223,9 +249,18 @@ class Vector: public IMatrix<dtype>
                 }
         };
 
-        Iterator begin(){return Vector<dtype>::Iterator(*this,0);}
-        Iterator end(){return Vector<dtype>::Iterator(*this,this->data.size());}
+        Iterator begin()const{return Vector<dtype>::Iterator(*this,0);}
+        Iterator end()const{return Vector<dtype>::Iterator(*this,this->data.size());}
 };
+
+template <typename dtype>
+Vector<dtype> operator*(const dtype& lhs, const Vector<dtype>& rhs) 
+{
+    Vector v2(rhs);
+    for (uint32_t i=0;i<rhs.data.size();i++)
+        v2.data[i]*=lhs;
+    return rhs;
+}
 
 template<typename dtype>
 class Matrix: public IMatrix<dtype>
@@ -237,7 +272,10 @@ class Matrix: public IMatrix<dtype>
         Matrix(){}
         Matrix(uint32_t n_, uint32_t m_):data(static_cast<std::size_t>(n_)*m_,0),n(n_),m(m_){}
         Matrix(std::pair<uint32_t, uint32_t> s):Matrix(s.first,s.second){}
-        Matrix(IMatrix<dtype>& M){
+
+        template<typename  Mtype>
+        requires IsMatrix<dtype, Mtype>
+        Matrix(const Mtype& M){
             auto p=M.size();
 
             this->n=p.first;
@@ -245,9 +283,8 @@ class Matrix: public IMatrix<dtype>
 
             this->data.resize(m*n);
 
-            for (uint32_t i=0;i<p.first;i++)
-                for (uint32_t j=0;j<p.second;j++)
-                    this->data[static_cast<std::size_t>(i)*p.second+j]=M.gev(i, j);
+            for (auto [i,j,c] : M)
+                    this->data[static_cast<std::size_t>(i)*p.second+j]=c;
                 
         }
 
@@ -304,8 +341,8 @@ class Matrix: public IMatrix<dtype>
                 }
         };
 
-        Iterator begin(){return Matrix<dtype>::Iterator(*this,0);}
-        Iterator end(){return Matrix<dtype>::Iterator(*this,this->data.size());}
+        Iterator begin()const{return Matrix<dtype>::Iterator(*this,0);}
+        Iterator end()const{return Matrix<dtype>::Iterator(*this,this->data.size());}
 };
 
 #ifndef Dmatrix

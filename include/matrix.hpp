@@ -1,8 +1,9 @@
-#ifndef matrix_hpp__
-#define matrix_hpp__
+#ifndef fmatrix_hpp__
+#define fmatrix_hpp__
 
 #include "imatrix.hpp"
 #include "m3diag.hpp"
-#include "mdoc.hpp"
+#include "mdok.hpp"
+#include "mcsr.hpp"
 
 #endif

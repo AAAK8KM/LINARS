@@ -1,6 +1,6 @@
 #define Dm3diag
 
-#include "matrix.hpp"
+#include "m3diag.hpp"
 
 
 template class M3diag<double>;

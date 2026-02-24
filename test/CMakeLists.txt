@@ -1,8 +1,7 @@
 
 include_directories(../include)
 
-#set(CMAKE_CURRENT_SOURCE_DIR test)
-
+enable_testing()
 
 message("${CMAKE_CURRENT_SOURCE_DIR}")
 # Build local libraries
@@ -21,11 +20,34 @@ target_link_libraries(tomasTest MATRIX TOMAS)
 target_compile_options(tomasTest PRIVATE -O3)
 target_compile_features(tomasTest PRIVATE ${TARGET_CXX_STANDARD})
 
-add_executable( itTest it_test.cpp)
-target_link_libraries(itTest MATRIX)
-target_compile_features(itTest PRIVATE ${TARGET_CXX_STANDARD})
 
-set(TDEPS basicIOTest mulTest tomasTest)
+find_package(GTest REQUIRED)
+include(GoogleTest)
+
+add_executable( mdokTest mdok_test.cpp)
+target_link_libraries(mdokTest PUBLIC MATRIX  PRIVATE GTest::gtest_main)
+target_compile_features(mdokTest PRIVATE ${TARGET_CXX_STANDARD})
+gtest_discover_tests(mdokTest)
+
+add_executable( mcsrTest mcsr_test.cpp)
+target_link_libraries(mcsrTest PUBLIC MATRIX PRIVATE GTest::gtest_main)
+target_compile_features(mcsrTest PRIVATE ${TARGET_CXX_STANDARD})
+gtest_discover_tests(mcsrTest)
+
+add_executable( mxvTest mxv_test.cpp)
+target_link_libraries(mxvTest PUBLIC MATRIX PRIVATE GTest::gtest_main)
+target_compile_features(mxvTest PRIVATE ${TARGET_CXX_STANDARD})
+gtest_discover_tests(mxvTest)
+
+add_executable( itTestm it_test_m.cpp)
+target_link_libraries(itTestm MATRIX)
+target_compile_features(itTestm PRIVATE ${TARGET_CXX_STANDARD})
+
+add_executable( csrTestm csr_test_m.cpp)
+target_link_libraries(csrTestm MATRIX)
+target_compile_features(csrTestm PRIVATE ${TARGET_CXX_STANDARD})
+
+set(TDEPS basicIOTest mulTest tomasTest mcsrTest mdokTest mxvTest)
 
 set(TEST_CONFIGS
     "basicIOTest d test/io1"
@@ -50,8 +72,6 @@ set(TEST_CONFIGS
     "tomasTest ld 50000 1"
 )
 
-enable_testing()
-
 foreach(config IN LISTS TEST_CONFIGS)
     # Split config: first element = test name, rest = args
     
@@ -66,5 +86,12 @@ foreach(config IN LISTS TEST_CONFIGS)
         COMMAND ${test_name} ${config}
     )
 endforeach()
+
+add_custom_target(mtest ALL
+    COMMAND ${CMAKE_CTEST_COMMAND}
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/test
+    COMMENT "Running CTest suite"
+    VERBATIM 
+)
 
 add_dependencies(mtest ${TDEPS})

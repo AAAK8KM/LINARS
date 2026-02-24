@@ -1,6 +1,6 @@
 #define Dmatrix
 
-#include "matrix.hpp"
+#include "imatrix.hpp"
 
 
 template class Matrix<double>;
