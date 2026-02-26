@@ -69,23 +69,25 @@ class MDOK: public IMatrix<dtype>
                 Iterator(const MDOK<dtype>& M, bool e):IIterator<dtype>(M),it(!e?M.data.begin():M.data.end()){}
                 void operator++()
                 {
-                    if (const MDOK<dtype>* sptr = dynamic_cast<const MDOK<dtype>*>(this->wptr))
-                    {
-                        if (it!=sptr->data.end()) it++;
-                    }
-                    else
-                        throw std::runtime_error("Iterator's object was destroyed");
+                    //if (
+                    //const MDOK<dtype>* sptr = static_cast<const MDOK<dtype>*>(this->wptr))
+                    //{
+                    //    if (it!=sptr->data.end()) 
+                    it++;
+                    //}
+                    //else
+                    //    throw std::runtime_error("Iterator's object was destroyed");
                 }
 
                 std::tuple<uint32_t,uint32_t,dtype> operator*()
                 {
-                    if (const MDOK<dtype>* sptr = dynamic_cast<const MDOK<dtype>*>(this->wptr))
-                    {
-                        if (it==sptr->data.end()) throw std::runtime_error("Trying to unname end pointer");
+                    //if (const MDOK<dtype>* sptr = static_cast<const MDOK<dtype>*>(this->wptr))
+                    //{
+                    //    if (it==sptr->data.end()) throw std::runtime_error("Trying to unname end pointer");
                         return std::make_tuple(it->first.first,it->first.second,it->second);
-                    }
-                    else
-                        throw std::runtime_error("Iterator's object was destroyed");
+                    //}
+                    //else
+                    //    throw std::runtime_error("Iterator's object was destroyed");
                 }
 
                 bool operator!=(const Iterator& rhs)

@@ -223,24 +223,26 @@ class Vector: public IMatrix<dtype>
                 Iterator(const Vector<dtype>& M, size_t idx_):IIterator<dtype>(M),idx(idx_){}
                 void operator++()
                 {
-                    if (const Vector<dtype>* sptr = dynamic_cast<const Vector<dtype>*>(this->wptr))
+                    idx++;
+                    /*if (const Vector<dtype>* sptr = static_cast<const Vector<dtype>*>(this->wptr))
                     {
-                        if (idx<sptr->data.size()) idx++;
+                        if (idx<sptr->data.size()) 
                     }
                     else
-                        throw std::runtime_error("Iterator's object was destroyed");
+                        throw std::runtime_error("Iterator's object was destroyed");*/
                 }
 
                 std::tuple<uint32_t,uint32_t,dtype> operator*()
                 {
-                    if (const Vector<dtype>* sptr = dynamic_cast<const Vector<dtype>*>(this->wptr))
-                    {
-                        if (idx==sptr->data.size()) throw std::runtime_error("Trying to unname end pointer");
-                        return std::make_tuple((sptr->transp?0:idx),
+                    //if (
+                    const Vector<dtype>* sptr = static_cast<const Vector<dtype>*>(this->wptr);//)
+                    //{
+                       // if (idx==sptr->data.size()) throw std::runtime_error("Trying to unname end pointer");
+                    return std::make_tuple((sptr->transp?0:idx),
                             (sptr->transp?idx:0),sptr->data[idx]);
-                    }
-                    else
-                        throw std::runtime_error("Iterator's object was destroyed");
+                    //}
+                    //else
+                    //    throw std::runtime_error("Iterator's object was destroyed");
                 }
 
                 bool operator!=(const Iterator& it)
@@ -311,33 +313,40 @@ class Matrix: public IMatrix<dtype>
         {
             private:
                 size_t idx;
+                uint32_t it,jt;
             public:
-                Iterator(const Matrix<dtype>& M, size_t idx_):IIterator<dtype>(M),idx(idx_){}
+                Iterator(const Matrix<dtype>& M, size_t idx_):IIterator<dtype>(M),idx(idx_),
+                        it(static_cast<uint32_t>(idx_/M.m)),jt(static_cast<uint32_t>(idx_/M.m)){}
                 void operator++()
                 {
-                    if (const Matrix<dtype>* sptr = dynamic_cast<const Matrix<dtype>*>(this->wptr))
+                    const Matrix<dtype>* sptr = static_cast<const Matrix<dtype>*>(this->wptr);
+                    idx++;
+                    jt++;
+                    if (jt==sptr->m)
                     {
-                        if (idx<sptr->data.size()) idx++;
+                        jt=0;
+                        it++;
+                    }
+                    /*if (const Matrix<dtype>* sptr = static_cast<const Matrix<dtype>*>(this->wptr))
+                    {
+                        if (idx<sptr->data.size()) 
                     }
                     else
-                        throw std::runtime_error("Iterator's object was destroyed");
+                        throw std::runtime_error("Iterator's object was destroyed");*/
                 }
 
                 std::tuple<uint32_t,uint32_t,dtype> operator*()
                 {
-                    if (const Matrix<dtype>* sptr = dynamic_cast<const Matrix<dtype>*>(this->wptr))
-                    {
-                        if (idx==sptr->data.size()) throw std::runtime_error("Trying to unname end pointer");
-                        return std::make_tuple(static_cast<uint32_t>(idx/sptr->m),
-                            static_cast<uint32_t>(idx%sptr->m),sptr->data[idx]);
-                    }
-                    else
-                        throw std::runtime_error("Iterator's object was destroyed");
+                    const Matrix<dtype>* sptr = static_cast<const Matrix<dtype>*>(this->wptr);
+                        //if (idx==sptr->data.size()) throw std::runtime_error("Trying to unname end pointer");
+                    //std::size_t p=idx/sptr->m;
+                    return std::make_tuple(static_cast<uint32_t>(it),
+                            static_cast<uint32_t>(jt),sptr->data[idx]);
                 }
 
-                bool operator!=(const Iterator& it)
+                bool operator!=(const Iterator& itr)
                 {
-                    return (it.idx!=idx)||(this->wptr!=it.wptr);
+                    return (itr.idx!=idx)||(this->wptr!=itr.wptr);
                 }
         };
 

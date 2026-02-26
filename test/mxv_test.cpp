@@ -1,4 +1,3 @@
-#include "imatrix.hpp"
 #include "matrix.hpp"
 #include "types.hpp"
 #include <cstdint>
@@ -63,7 +62,7 @@ TEST_P(MtestCSR, random)
 }
 
 INSTANTIATE_TEST_SUITE_P(
-    DOK_Vector_Test, 
+    MCSR_Vector_Test, 
     MtestCSR,   
     ::testing::Range(0, 10) 
 );

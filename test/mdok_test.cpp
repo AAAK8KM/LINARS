@@ -14,6 +14,7 @@ TEST(DOK_Matrix_Test, manual)
     A2.ge(2,1)=5;
     A2.ge(4,4)=6;
     EXPECT_EQ(A2,  MDOK<double> (A2));
+    EXPECT_EQ(A2,  Matrix<double>(MDOK<double> (A2)));
 }
 
 class Mtest : public ::testing::TestWithParam<int> {};

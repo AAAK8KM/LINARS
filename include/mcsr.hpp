@@ -86,31 +86,33 @@ class MCSR: public IMatrix<dtype>
                 uint32_t idx;
                 uint32_t i;
             public:
-                Iterator(const MCSR<dtype>& M, uint32_t idx_):IIterator<dtype>(M),idx(idx_),i(0){while (M.rows[i+1]<idx) i++;}
+                Iterator(const MCSR<dtype>& M, uint32_t idx_):IIterator<dtype>(M),idx(idx_),i(0){while (M.rows[i+1]<=idx && idx!=M.vals.size()) i++;}
                 void operator++()
                 {
-                    if (const MCSR<dtype>* sptr = dynamic_cast<const MCSR<dtype>*>(this->wptr))
-                    {
-                        if (idx!=sptr->vals.size()) 
-                        {
+                    //if (
+                    const MCSR<dtype>* sptr = static_cast<const MCSR<dtype>*>(this->wptr);//)
+                    //{
+                        /*if (idx!=sptr->vals.size()) 
+                        {*/
                             idx++;
-                            while (sptr->rows[i+1]<=idx) i++;
-                        }
-                    }
-                    else
-                        throw std::runtime_error("Iterator's object was destroyed");
+                            while (sptr->rows[i+1]<=idx && i+1!=sptr->rows.size()) i++;
+                        //}
+                    //}
+                    //else
+                    //    throw std::runtime_error("Iterator's object was destroyed");
                 }
 
                 std::tuple<uint32_t,uint32_t,dtype> operator*()
                 {
-                    if (const MCSR<dtype>* sptr = dynamic_cast<const MCSR<dtype>*>(this->wptr))
-                    {
-                        if (idx==sptr->vals.size()) throw std::runtime_error("Trying to unname end pointer");
+                    //if (
+                    const MCSR<dtype>* sptr = static_cast<const MCSR<dtype>*>(this->wptr);//)
+                    //{
+                       // if (idx==sptr->vals.size()) throw std::runtime_error("Trying to unname end pointer");
                         auto p=sptr->vals[idx];
                         return std::make_tuple(i,p.first,p.second);
-                    }
-                    else
-                        throw std::runtime_error("Iterator's object was destroyed");
+                    //}
+                    //else
+                    //    throw std::runtime_error("Iterator's object was destroyed");
                 }
 
                 bool operator!=(const Iterator& rhs)

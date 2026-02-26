@@ -47,6 +47,10 @@ add_executable( csrTestm csr_test_m.cpp)
 target_link_libraries(csrTestm MATRIX)
 target_compile_features(csrTestm PRIVATE ${TARGET_CXX_STANDARD})
 
+add_executable( t1Testm time_test.cpp)
+target_link_libraries(t1Testm MATRIX)
+target_compile_features(t1Testm PRIVATE ${TARGET_CXX_STANDARD})
+
 set(TDEPS basicIOTest mulTest tomasTest mcsrTest mdokTest mxvTest)
 
 set(TEST_CONFIGS
@@ -87,7 +91,7 @@ foreach(config IN LISTS TEST_CONFIGS)
     )
 endforeach()
 
-add_custom_target(mtest ALL
+add_custom_target(mtest
     COMMAND ${CMAKE_CTEST_COMMAND}
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/test
     COMMENT "Running CTest suite"

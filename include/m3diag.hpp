@@ -78,24 +78,26 @@ class M3diag: public IMatrix<dtype>
                 Iterator(const M3diag<dtype>& M, size_t idx_):IIterator<dtype>(M),idx(static_cast<uint32_t>(idx_)){}
                 void operator++()
                 {
-                    if (const M3diag<dtype>* sptr = dynamic_cast<const M3diag<dtype>*>(this->wptr))
+                    idx++;
+                    /*if (const M3diag<dtype>* sptr = static_cast<const M3diag<dtype>*>(this->wptr))
                     {
-                        if (idx<sptr->data.size()) idx++;
+                        if (idx<sptr->data.size())
                     }
                     else
-                        throw std::runtime_error("Iterator's object was destroyed");
+                        throw std::runtime_error("Iterator's object was destroyed");*/
                 }
 
                 std::tuple<uint32_t,uint32_t,dtype> operator*()
                 {
-                    if (const M3diag<dtype>* sptr = dynamic_cast<const M3diag<dtype>*>(this->wptr))
-                    {
-                        if (idx==sptr->data.size()) throw std::runtime_error("Trying to unname end pointer");
+                    //if (
+                    const M3diag<dtype>* sptr = static_cast<const M3diag<dtype>*>(this->wptr);//)
+                    /*{
+                        if (idx==sptr->data.size()) throw std::runtime_error("Trying to unname end pointer");*/
                         return std::make_tuple((idx+1)/3,
                             (idx+1)/3+(idx+1)%3-1,sptr->data[idx]);
-                    }
+                    /*}
                     else
-                        throw std::runtime_error("Iterator's object was destroyed");
+                        throw std::runtime_error("Iterator's object was destroyed");*/
                 }
 
                 bool operator!=(const Iterator& it)

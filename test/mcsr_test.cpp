@@ -36,6 +36,7 @@ TEST_P(Mtest, random)
             A2.ge(i/100, i%100)=dist2(rng);
 
     EXPECT_EQ(A2,   MCSR<double> (A2));
+    EXPECT_EQ(A2,   Matrix<double>(MCSR<double> (A2)));
 }
 
 INSTANTIATE_TEST_SUITE_P(
