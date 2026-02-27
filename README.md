@@ -1,4 +1,4 @@
-#LINARS
+# LINARS
 
 To build use
 ```
