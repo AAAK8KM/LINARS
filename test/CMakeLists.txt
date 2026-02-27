@@ -4,9 +4,9 @@ include_directories(../include)
 enable_testing()
 
 message("${CMAKE_CURRENT_SOURCE_DIR}")
-# Build local libraries
-# ----------------------------------------------
 
+# Build tests
+# ----------------------------------------------
 add_executable( basicIOTest basic_io_test.cpp)
 target_link_libraries(basicIOTest MATRIX)
 target_compile_features(basicIOTest PRIVATE ${TARGET_CXX_STANDARD})
@@ -92,7 +92,7 @@ foreach(config IN LISTS TEST_CONFIGS)
 endforeach()
 
 add_custom_target(mtest
-    COMMAND ${CMAKE_CTEST_COMMAND}
+    COMMAND ${CMAKE_CTEST_COMMAND} -j ${CMAKE_BUILD_PARALLEL_LEVEL}
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/test
     COMMENT "Running CTest suite"
     VERBATIM 

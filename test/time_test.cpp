@@ -24,7 +24,7 @@ const uint32_t N=3000;
 
 std::vector<std::pair<uint32_t,uint32_t>> cs(N*N);
 
-__attribute__((optimize("O0")))
+
 int main()
 {
     Vector<double> v(N), res(N),res2(N);
@@ -39,8 +39,8 @@ int main()
         return 1;
     }
 
-    for (uint32_t n=0;n<=N*N;n+=N*N/20)
-        for (uint32_t cnt=1;cnt<10;cnt++)
+    for (uint32_t n=0;n<=N*N;n+=N*N/50)
+        for (uint32_t cnt=1;cnt<5;cnt++)
         {
             if (n==0) break;
             file<<n<<",";

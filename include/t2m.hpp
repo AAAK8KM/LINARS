@@ -3,6 +3,7 @@
 
 #include <cstddef>
 #include <istream>
+#include "imatrix.hpp"
 #include "matrix.hpp"
 
 template<typename dtype>
@@ -16,7 +17,7 @@ std::istream& operator>>(std::istream& in, Matrix<dtype>& m)
 }
 
 template<typename dtype>
-std::ostream& operator<<(std::ostream& o,const Matrix<dtype>& m)
+std::ostream& operator<<(std::ostream& o,const IMatrix<dtype>& m)
 {
     auto p=m.size();
     for (std::size_t i=0;i<p.first;i++)
