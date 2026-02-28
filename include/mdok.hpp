@@ -3,7 +3,6 @@
 
 #include "imatrix.hpp"
 #include <cstdint>
-#include <iostream>
 #include <map>
 #include <stdexcept>
 #include <utility>

@@ -1,8 +1,6 @@
 #include "imatrix.hpp"
 #include "matrix.hpp"
 #include <cstdint>
-#include <iostream>
-#include <ostream>
 #include <random>
 #include <utility>
 #include <gtest/gtest.h>

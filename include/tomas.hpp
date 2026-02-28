@@ -1,7 +1,7 @@
 #ifndef tomas_hpp__
 #define tomas_hpp__
+
 #include "matrix.hpp"
-#include <cstddef>
 #include <cstdint>
 #include <stdexcept>
 
