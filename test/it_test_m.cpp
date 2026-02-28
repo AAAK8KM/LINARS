@@ -6,6 +6,7 @@
 #include <ostream>
 #include <utility>
 
+using namespace LINARS;
 
 int main()
 {

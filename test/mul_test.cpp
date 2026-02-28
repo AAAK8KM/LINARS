@@ -6,6 +6,8 @@
 #include <iostream>
 #include <stdexcept>
 
+using namespace LINARS;
+
 std::size_t n,m;
 
 template <typename T>

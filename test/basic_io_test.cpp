@@ -8,6 +8,8 @@
 
 std::size_t n,m;
 
+using namespace LINARS;
+
 int main(int argc, char* argv[])
 {
 

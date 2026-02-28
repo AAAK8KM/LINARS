@@ -4,6 +4,8 @@
 #include <utility>
 #include <gtest/gtest.h>
 
+using namespace LINARS;
+
 TEST(DOK_Matrix_Test, manual)
 {
     Matrix<double> A2(std::make_pair(5, 5));

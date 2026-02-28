@@ -9,6 +9,8 @@
 #include <utility>
 #include <vector>
 
+namespace LINARS {
+
 template<typename dtype>
 class MDOK: public IMatrix<dtype>
 {
@@ -104,5 +106,7 @@ class MDOK: public IMatrix<dtype>
 extern template class MDOK<double>;
 extern template class MDOK<float>;
 #endif
+
+}
 
 #endif

@@ -5,7 +5,7 @@
 #include <utility>
 #include <gtest/gtest.h>
 
-
+using namespace LINARS;
 
 std::random_device dev;
 std::mt19937 rng(dev());

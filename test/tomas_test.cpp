@@ -10,6 +10,8 @@
 #include <random>
 #include <stdexcept>
 
+using namespace LINARS;
+
 std::random_device dev;
 std::mt19937 rng(dev());
 

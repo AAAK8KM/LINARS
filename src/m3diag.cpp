@@ -3,5 +3,6 @@
 #include "m3diag.hpp"
 
 
-template class M3diag<double>;
-template class M3diag<float>;
+
+template class LINARS::M3diag<double>;
+template class LINARS::M3diag<float>;

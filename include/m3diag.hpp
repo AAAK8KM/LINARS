@@ -5,6 +5,8 @@
 #include <cstddef>
 #include <cstdint>
 
+namespace LINARS {
+
 template<typename dtype>
 class M3diag: public IMatrix<dtype>
 {
@@ -116,5 +118,6 @@ extern template class M3diag<double>;
 extern template class M3diag<float>;
 #endif
 
+}
 
 #endif

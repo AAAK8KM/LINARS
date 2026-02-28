@@ -3,5 +3,5 @@
 #include "mcsr.hpp"
 
 
-template class MCSR<double>;
-template class MCSR<float>;
+template class LINARS::MCSR<double>;
+template class LINARS::MCSR<float>;

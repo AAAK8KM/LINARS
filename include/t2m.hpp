@@ -6,8 +6,9 @@
 #include "imatrix.hpp"
 #include "matrix.hpp"
 
+
 template<typename dtype>
-std::istream& operator>>(std::istream& in, Matrix<dtype>& m)
+std::istream& operator>>(std::istream& in, LINARS::Matrix<dtype>& m)
 {
     auto p=m.size();
     for (std::size_t i=0;i<p.first;i++)
@@ -17,7 +18,7 @@ std::istream& operator>>(std::istream& in, Matrix<dtype>& m)
 }
 
 template<typename dtype>
-std::ostream& operator<<(std::ostream& o,const IMatrix<dtype>& m)
+std::ostream& operator<<(std::ostream& o,const LINARS::IMatrix<dtype>& m)
 {
     auto p=m.size();
     for (std::size_t i=0;i<p.first;i++)

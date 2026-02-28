@@ -10,6 +10,8 @@
 #include <utility>
 #include <vector>
 
+namespace LINARS {
+
 template <typename dtype>
 class MCSR: public IMatrix<dtype>
 {
@@ -129,5 +131,7 @@ class MCSR: public IMatrix<dtype>
 extern template class MCSR<double>;
 extern template class MCSR<float>;
 #endif
+
+}
 
 #endif

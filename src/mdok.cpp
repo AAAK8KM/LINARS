@@ -3,5 +3,5 @@
 #include "mdok.hpp"
 
 
-template class MDOK<double>;
-template class MDOK<float>;
+template class LINARS::MDOK<double>;
+template class LINARS::MDOK<float>;

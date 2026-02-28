@@ -14,6 +14,7 @@
 #include <vector>
 #include <chrono>
 
+using namespace LINARS;
 
 std::random_device dev;
 std::mt19937 rng(dev());

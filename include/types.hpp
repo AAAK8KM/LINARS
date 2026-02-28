@@ -1,6 +1,7 @@
 #ifndef types_hpp__
 #define types_hpp__
 
+namespace LINARS {
 
 template<typename dtype>
 class Matrix;
@@ -19,5 +20,7 @@ class MCSR;
 
 template<typename dtype>
 class MDOK;
+
+}
 
 #endif

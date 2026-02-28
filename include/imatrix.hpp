@@ -11,6 +11,8 @@
 #include <type_traits>
 #include "types.hpp"
 
+namespace LINARS {
+
 template<typename dtype>
 class IIterator{
     protected:
@@ -358,5 +360,7 @@ class Matrix: public IMatrix<dtype>
 extern template class Matrix<double>;
 extern template class Matrix<float>;
 #endif
+
+}
 
 #endif

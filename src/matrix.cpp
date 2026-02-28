@@ -3,5 +3,5 @@
 #include "imatrix.hpp"
 
 
-template class Matrix<double>;
-template class Matrix<float>;
+template class LINARS::Matrix<double>;
+template class LINARS::Matrix<float>;

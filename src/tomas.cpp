@@ -2,5 +2,5 @@
 
 #include "tomas.hpp"
 
-template class TomasSolver<double>;
-template class TomasSolver<float>;
+template class LINARS::TomasSolver<double>;
+template class LINARS::TomasSolver<float>;

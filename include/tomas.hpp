@@ -5,6 +5,8 @@
 #include <cstdint>
 #include <stdexcept>
 
+namespace LINARS {
+
 template<typename dtype>
 class TomasSolver
 {
@@ -49,5 +51,7 @@ class TomasSolver
 extern template class TomasSolver<double>;
 extern template class TomasSolver<float>;
 #endif
+
+}
 
 #endif
