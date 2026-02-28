@@ -1,8 +1,6 @@
 
 include_directories(../include)
 
-enable_testing()
-
 message("${CMAKE_CURRENT_SOURCE_DIR}")
 
 # Build tests
