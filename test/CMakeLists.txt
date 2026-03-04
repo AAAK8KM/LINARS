@@ -32,6 +32,11 @@ target_link_libraries(mcsrTest PUBLIC MATRIX PRIVATE GTest::gtest_main)
 target_compile_features(mcsrTest PRIVATE ${TARGET_CXX_STANDARD})
 gtest_discover_tests(mcsrTest)
 
+add_executable( vectorTest vector_test.cpp)
+target_link_libraries(vectorTest PUBLIC MATRIX PRIVATE GTest::gtest_main)
+target_compile_features(vectorTest PRIVATE ${TARGET_CXX_STANDARD})
+gtest_discover_tests(vectorTest)
+
 add_executable( mxvTest mxv_test.cpp)
 target_link_libraries(mxvTest PUBLIC MATRIX PRIVATE GTest::gtest_main)
 target_compile_features(mxvTest PRIVATE ${TARGET_CXX_STANDARD})
@@ -49,7 +54,7 @@ add_executable( t1Testm time_test.cpp)
 target_link_libraries(t1Testm MATRIX)
 target_compile_features(t1Testm PRIVATE ${TARGET_CXX_STANDARD})
 
-set(TDEPS basicIOTest mulTest tomasTest mcsrTest mdokTest mxvTest)
+set(TDEPS basicIOTest mulTest tomasTest mcsrTest mdokTest mxvTest vectorTest)
 
 set(TEST_CONFIGS
     "basicIOTest d test/io1"
