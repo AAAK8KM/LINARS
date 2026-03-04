@@ -15,7 +15,7 @@ std::mt19937 rng(dev());
 class VtestS : public ::testing::TestWithParam<int> {};
 TEST_P(VtestS, random)
 {
-    Vector<double> V1(std::make_pair(100, 1)),V2(V1),VS(V1);
+    Vector<double> V1(std::make_pair(100, 1)),V2(V1),VS(V1),VD(V1);
     std::uniform_real_distribution<double> dist2(-1000,1000);
     
     for (uint32_t i=0;i<V1.size().first;i++)
@@ -23,13 +23,15 @@ TEST_P(VtestS, random)
         V1[i]=dist2(rng);
         V2[i]=dist2(rng);
         VS[i]=V1[i]+V2[i];
+        VS[i]=V1[i]-V2[i];
     }
        
 
     EXPECT_EQ(V1+V2,  VS);
+    EXPECT_EQ(V1-V2,  VD);
 }
 INSTANTIATE_TEST_SUITE_P(
-    Vector_Sum_Test, 
+    Vector_SumSub_Test, 
     VtestS,   
     ::testing::Range(0, 10) 
 );

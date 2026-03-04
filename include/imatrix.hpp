@@ -193,6 +193,16 @@ class Vector: public IMatrix<dtype>
             return v2;
         }
 
+        Vector operator-(Vector &rhs) const
+        {
+            if (this->transp!=rhs.transp) throw std::runtime_error("Vectors with different state");
+            if (this->data->size()!=rhs.data->size()) throw std::runtime_error("Vectors with different size can not be summurized");
+            Vector v2(*this);
+            for (uint32_t i=0;i<data->size();i++)
+                (*v2.data)[i]-=(*rhs.data)[i];
+            return v2;
+        }
+
         std::vector<dtype>& get_vector()
         {
             return *data;
@@ -290,6 +300,17 @@ class Vector: public IMatrix<dtype>
 };
 
 template<typename dtype>
+dtype operator*(const Vector<dtype> &lhs,const Vector<dtype> &rhs)
+{
+    if (!(lhs.transp==1 && rhs.transp==0)) throw std::runtime_error("Vectors multiplication wrong usage");
+    if (lhs.data->size()!=rhs.data->size()) throw std::runtime_error("Vectors with different size can not be multiplied");
+    dtype res=0;
+    for (uint32_t i=0;i<lhs.data->size();i++)
+        res+=(*lhs.data)[i]*(*rhs.data)[i];
+    return res;
+}
+
+template<typename dtype>
 class Matrix: public IMatrix<dtype>
 {
     private:
@@ -380,20 +401,105 @@ class Matrix: public IMatrix<dtype>
 };
 
 template<typename dtype>
-dtype operator*(const Vector<dtype> &lhs,const Vector<dtype> &rhs)
+class VMatrix: public IMatrix<dtype>
 {
-    if (!(lhs.transp==1 && rhs.transp==0)) throw std::runtime_error("Vectors multiplication wrong usage");
-    if (lhs.data->size()!=rhs.data->size()) throw std::runtime_error("Vectors with different size can not be multiplied");
-    dtype res=0;
-    for (uint32_t i=0;i<lhs.data->size();i++)
-        res+=(*lhs.data)[i]*(*rhs.data)[i];
-    return res;
-}
+    private:
+        std::vector<Vector<dtype>> data;
+        uint32_t n,m;
+    public:
+        VMatrix(){}
+        VMatrix(uint32_t n_, uint32_t m_):data(static_cast<std::size_t>(m_),Vector<dtype>(n_)),n(n_),m(m_){}
+        VMatrix(std::pair<uint32_t, uint32_t> s):VMatrix(s.first,s.second){}
 
+        template<typename  Mtype>
+        requires IsMatrix<dtype, Mtype>
+        VMatrix(const Mtype& M){
+            auto p=M.size();
+
+            this->n=p.first;
+            this->m=p.second;
+
+            this->data.resize(m);
+
+            for (auto [i,j,c] : M)
+                    this->data[j][i]=c;
+                
+        }
+
+        dtype& ge(const uint32_t i, const uint32_t j)
+        {
+            //std::cout<<static_cast<std::size_t>(i)<<" "<<j<<std::endl;
+            return data[j][i];
+        };
+
+        const dtype& ge(const uint32_t i, const uint32_t j) const
+        {
+            return data[j][i];
+        };
+        
+        dtype gev(const uint32_t i, const uint32_t j) const
+        {
+            return data[j][i];
+        };
+
+        Vector<dtype>& gv(const uint32_t j) const
+        {
+            return data[j];
+        };
+
+        inline const std::pair<uint32_t, uint32_t> size() const {return std::make_pair(n, m);};
+
+
+        class Iterator: private IIterator<dtype>
+        {
+            private:
+                size_t idx;
+                uint32_t it,jt;
+            public:
+                Iterator(const VMatrix<dtype>& M, size_t idx_):IIterator<dtype>(M),idx(idx_),
+                        it(static_cast<uint32_t>(idx_/M.m)),jt(static_cast<uint32_t>(idx_/M.m)){}
+                void operator++()
+                {
+                    const VMatrix<dtype>* sptr = static_cast<const VMatrix<dtype>*>(this->wptr);
+                    idx++;
+                    jt++;
+                    if (jt==sptr->m)
+                    {
+                        jt=0;
+                        it++;
+                    }
+                    /*if (const Matrix<dtype>* sptr = static_cast<const Matrix<dtype>*>(this->wptr))
+                    {
+                        if (idx<sptr->data.size()) 
+                    }
+                    else
+                        throw std::runtime_error("Iterator's object was destroyed");*/
+                }
+
+                std::tuple<uint32_t,uint32_t,dtype> operator*()
+                {
+                    const VMatrix<dtype>* sptr = static_cast<const VMatrix<dtype>*>(this->wptr);
+                        //if (idx==sptr->data.size()) throw std::runtime_error("Trying to unname end pointer");
+                    //std::size_t p=idx/sptr->m;
+                    return std::make_tuple(static_cast<uint32_t>(it),
+                            static_cast<uint32_t>(jt),sptr->data[jt][it]);
+                }
+
+                bool operator!=(const Iterator& itr)
+                {
+                    return (itr.idx!=idx)||(this->wptr!=itr.wptr);
+                }
+        };
+
+        Iterator begin()const{return VMatrix<dtype>::Iterator(*this,0);}
+        Iterator end()const{return VMatrix<dtype>::Iterator(*this,this->data.size()*n);}
+};
 
 #ifndef Dmatrix
 extern template class Matrix<double>;
 extern template class Matrix<float>;
+extern template class VMatrix<double>;
+extern template class VMatrix<float>;
 #endif
 
 #ifndef Dvector

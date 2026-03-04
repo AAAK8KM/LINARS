@@ -21,6 +21,9 @@ class MCSR;
 template<typename dtype>
 class MDOK;
 
+template<typename dtype>
+class VMatrix;
+
 }
 
 #endif

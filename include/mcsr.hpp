@@ -5,7 +5,6 @@
 #include "imatrix.hpp"
 #include <algorithm>
 #include <cstdint>
-#include <iostream>
 #include <tuple>
 #include <utility>
 #include <vector>

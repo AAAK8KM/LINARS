@@ -6,6 +6,8 @@
 
 template class LINARS::Matrix<double>;
 template class LINARS::Matrix<float>;
+template class LINARS::VMatrix<double>;
+template class LINARS::VMatrix<float>;
 
 template class LINARS::Vector<double>;
 template class LINARS::Vector<float>;
