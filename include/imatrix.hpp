@@ -123,13 +123,13 @@ class Vector: public IMatrix<dtype>
 {
     private:
         bool transp;
-        std::shared_ptr<std::vector<dtype>> data;
+        std::vector<dtype> data;
     public:
         Vector(){}
-        Vector(uint32_t n_, bool t=0):transp(t),data(new std::vector<dtype>(n_,0)){}
-        Vector(std::pair<uint32_t, uint32_t> s):transp(s.first<s.second),data(new std::vector<dtype>(s.first<s.second?s.second:s.first))
+        Vector(uint32_t n_, bool t=0):transp(t),data(n_,0){}
+        Vector(std::pair<uint32_t, uint32_t> s):transp(s.first<s.second),data(s.first<s.second?s.second:s.first)
         {if ((s.first>s.second?s.second:s.first)!=1) throw std::runtime_error("Wrong vector size to create!");}
-        Vector(std::vector<dtype>& v, bool t=0):transp(t),data(new std::vector<dtype>(v)){}
+        Vector(std::vector<dtype>& v, bool t=0):transp(t),data(v){}
         Vector(IMatrix<dtype>& M){
             auto p=M.size();
             if (p.second!=1 && p.first!=1) throw std::runtime_error("Too big mstrix to become vector");
@@ -137,86 +137,71 @@ class Vector: public IMatrix<dtype>
             if (p.second==1)
             {
                 this->transp=false;
-                this->data=std::shared_ptr<std::vector<dtype>>(new std::vector<dtype>(p.first));
+                this->data.resize(p.first);
                 for (uint32_t i=0;i<p.first;i++)
-                    (*this->data)[i]=M.gev(i, 1);
+                    (this->data)[i]=M.gev(i, 1);
             }
             else
             {
                 this->transp=true;
-                this->data=std::shared_ptr<std::vector<dtype>>(new std::vector<dtype>(p.second));
+                this->data.resize(p.second);
                 for (uint32_t i=0;i<p.second;i++)
-                    (*this->data)[i]=M.gev(1, i);
+                    (this->data)[i]=M.gev(1, i);
             }
         }
 
-        
-
-        Vector transposed_shared()
-        {
-            Vector res;
-            res.data=data;
-            res.transp=1-transp;
-            return res;
-        }
-
-        Vector copy_shared()
-        {
-            Vector res;
-            res.data=data;
-            res.transp=transp;
-            return res;
-        }
-
-        Vector transposed()
+        Vector transposed() const
         {
             Vector res(*this);
             res.transp=1-transp;
             return res;
         }
 
-        dtype lenght()
+        dtype lenght() const
         {
-            return std::sqrt(this->transposed_shared()*(*this));
+            return std::sqrt((*this)|(*this));
         }
 
         template<typename  T>
         friend T operator*(const Vector<T>&,const Vector<T>&);
 
-        Vector operator+(Vector &rhs) const
+        template<typename  T>
+        friend T operator|(const Vector<T>&,const Vector<T>&);
+
+        Vector operator+(const Vector &rhs) const
         {
             if (this->transp!=rhs.transp) throw std::runtime_error("Vectors with different state");
-            if (this->data->size()!=rhs.data->size()) throw std::runtime_error("Vectors with different size can not be summurized");
+            if (this->data.size()!=rhs.data.size()) throw std::runtime_error("Vectors with different size can not be summurized");
             Vector v2(*this);
-            for (uint32_t i=0;i<data->size();i++)
-                (*v2.data)[i]+=(*rhs.data)[i];
+            for (uint32_t i=0;i<data.size();i++)
+                (v2.data)[i]+=(rhs.data)[i];
             return v2;
         }
 
-        Vector operator-(Vector &rhs) const
+        Vector operator-(const Vector &rhs) const
         {
             if (this->transp!=rhs.transp) throw std::runtime_error("Vectors with different state");
-            if (this->data->size()!=rhs.data->size()) throw std::runtime_error("Vectors with different size can not be summurized");
+            if (this->data.size()!=rhs.data.size()) throw std::runtime_error("Vectors with different size can not be summurized");
             Vector v2(*this);
-            for (uint32_t i=0;i<data->size();i++)
-                (*v2.data)[i]-=(*rhs.data)[i];
+            for (uint32_t i=0;i<data.size();i++)
+                (v2.data)[i]-=(rhs.data)[i];
             return v2;
         }
 
         std::vector<dtype>& get_vector()
         {
-            return *data;
+            return data;
         }
 
         dtype& ge(const uint32_t i, const uint32_t j)
         {
             if (!transp){
                 //if (j!=0) throw std::runtime_error("Wrong vector usage");
-                return (*data)[i];
+                return (data)[i];
             }
             else {
                 //if (i!=0) throw std::runtime_error("Wrong vector usage");
-                return (*data)[j];
+                return (data)[j];
             }
         };
 
@@ -224,11 +209,11 @@ class Vector: public IMatrix<dtype>
         {
             if (!transp){
                 //if (j!=0) throw std::runtime_error("Wrong vector usage");
-                return (*data)[i];
+                return (data)[i];
             }
             else {
                 //if (i!=0) throw std::runtime_error("Wrong vector usage");
-                return (*data)[j];
+                return (data)[j];
             }
         };
         
@@ -236,27 +221,27 @@ class Vector: public IMatrix<dtype>
         {
             if (!transp){
                 //if (j!=0) throw std::runtime_error("Wrong vector usage");
-                return (*data)[i];
+                return (data)[i];
             }
             else {
                 //if (i!=0) throw std::runtime_error("Wrong vector usage");
-                return (*data)[j];
+                return (data)[j];
             }
         };
 
         dtype& operator[](uint32_t i)
         {
-            return (*data)[i];
+            return (data)[i];
         }
 
         const dtype& operator[](uint32_t i) const
         {
-            return (*data)[i];
+            return (data)[i];
         }
 
         inline const std::pair<uint32_t, uint32_t> size() const {
-            if (!transp) return std::make_pair(data->size(), 1);
-            else return std::make_pair(1,data->size());
+            if (!transp) return std::make_pair(data.size(), 1);
+            else return std::make_pair(1,data.size());
         };
 
         class Iterator: private IIterator<dtype>
@@ -283,7 +268,7 @@ class Vector: public IMatrix<dtype>
                     //{
                        // if (idx==sptr->data.size()) throw std::runtime_error("Trying to unname end pointer");
                     return std::make_tuple((sptr->transp?0:idx),
-                            (sptr->transp?idx:0),(*sptr->data)[idx]);
+                            (sptr->transp?idx:0),sptr->data[idx]);
                     //}
                     //else
                     //    throw std::runtime_error("Iterator's object was destroyed");
@@ -296,17 +281,28 @@ class Vector: public IMatrix<dtype>
         };
 
         Iterator begin()const{return Vector<dtype>::Iterator(*this,0);}
-        Iterator end()const{return Vector<dtype>::Iterator(*this,this->data->size());}
+        Iterator end()const{return Vector<dtype>::Iterator(*this,this->data.size());}
 };
 
 template<typename dtype>
 dtype operator*(const Vector<dtype> &lhs,const Vector<dtype> &rhs)
 {
     if (!(lhs.transp==1 && rhs.transp==0)) throw std::runtime_error("Vectors multiplication wrong usage");
-    if (lhs.data->size()!=rhs.data->size()) throw std::runtime_error("Vectors with different size can not be multiplied");
+    if (lhs.data.size()!=rhs.data.size()) throw std::runtime_error("Vectors with different size can not be multiplied");
     dtype res=0;
-    for (uint32_t i=0;i<lhs.data->size();i++)
-        res+=(*lhs.data)[i]*(*rhs.data)[i];
+    for (uint32_t i=0;i<lhs.data.size();i++)
+        res+=(lhs.data)[i]*(rhs.data)[i];
+    return res;
+}
+
+template<typename dtype>
+dtype operator|(const Vector<dtype> &lhs,const Vector<dtype> &rhs)
+{
+    if (!(lhs.transp==rhs.transp)) throw std::runtime_error("Vectors scalar mul wrong usage");
+    if (lhs.data.size()!=rhs.data.size()) throw std::runtime_error("Vectors with different size can not be multiplied");
+    dtype res=0;
+    for (uint32_t i=0;i<lhs.data.size();i++)
+        res+=(lhs.data)[i]*(rhs.data)[i];
     return res;
 }
 
@@ -420,6 +416,8 @@ class VMatrix: public IMatrix<dtype>
             this->m=p.second;
 
             this->data.resize(m);
+            for (uint32_t i=0;i<m;i++)
+                data[i]=Vector<dtype>(n);
 
             for (auto [i,j,c] : M)
                     this->data[j][i]=c;
@@ -442,7 +440,12 @@ class VMatrix: public IMatrix<dtype>
             return data[j][i];
         };
 
-        Vector<dtype>& gv(const uint32_t j) const
+        Vector<dtype>& gv(const uint32_t j)
+        {
+            return data[j];
+        };
+
+        Vector<dtype>& operator[](const uint32_t j)
         {
             return data[j];
         };
@@ -504,9 +507,9 @@ extern template class VMatrix<float>;
 
 #ifndef Dvector
 extern template class Vector<double>;
-extern template double operator*(const Vector<double>&,const Vector<double>&);
+//extern double operator*(const Vector<double>&,const Vector<double>&);
 extern template class Vector<float>;
-extern template float operator*(const Vector<float>&,const Vector<float>&);
+//extern float operator*(const Vector<float>&,const Vector<float>&);
 #endif
 
 }

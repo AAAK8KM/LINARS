@@ -3,13 +3,16 @@
 
 #include "imatrix.hpp"
 
+namespace LINARS{
 
-template class LINARS::Matrix<double>;
-template class LINARS::Matrix<float>;
-template class LINARS::VMatrix<double>;
-template class LINARS::VMatrix<float>;
+template class Matrix<double>;
+template class Matrix<float>;
+template class VMatrix<double>;
+template class VMatrix<float>;
 
-template class LINARS::Vector<double>;
-template class LINARS::Vector<float>;
-double operator*(const LINARS::Vector<double>&,const LINARS::Vector<double>&);
-float operator*(const LINARS::Vector<float>&,const LINARS::Vector<float>&);
+template class Vector<double>;
+template class Vector<float>;
+//double operator*(const Vector<double>&,const Vector<double>&);
+//float operator*(const Vector<float>&,const Vector<float>&);
+
+}

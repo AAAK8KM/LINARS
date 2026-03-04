@@ -23,7 +23,7 @@ TEST_P(VtestS, random)
         V1[i]=dist2(rng);
         V2[i]=dist2(rng);
         VS[i]=V1[i]+V2[i];
-        VS[i]=V1[i]-V2[i];
+        VD[i]=V1[i]-V2[i];
     }
        
 
@@ -115,8 +115,9 @@ TEST_P(VtestMVxV2, random)
         c+=V1[i]*V2[i];
         //VS[i]=V1[i]+V2[i];
     }
-    EXPECT_EQ(V1.transposed_shared()*V2,  c);
+    EXPECT_EQ(V1.transposed()*V2,  c);
     EXPECT_EQ(V2.transposed()*V1,  c);
+    EXPECT_EQ(V2|V1,  c);
 }
 INSTANTIATE_TEST_SUITE_P(
     Vector_VectorxVector2_Test, 
