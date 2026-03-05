@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <cstddef>
 #include <cstdint>
+#include <functional>
 #include <iostream>
 #include <iterator>
 #include <stdexcept>
@@ -12,6 +13,7 @@
 #include <utility>
 #include <vector>
 #include <ranges>
+//#include "t2m.hpp"
 
 namespace LINARS {
 
@@ -21,23 +23,24 @@ class HausholdOP
     private:
         uint32_t start;
         const Vector<dtype> data;
+        const dtype l;
     public:
-        HausholdOP(const Vector<dtype>& v, uint32_t start_):start(start_),data(v){};
+        HausholdOP(const Vector<dtype>& v, uint32_t start_):start(start_),data(v),l((v|v)/2){};
 
         uint32_t get_start() {return start;};
         Vector<dtype> operator()(const Vector<dtype>& v)
         {
             //std::cout<<data<<std::endl;
             if (v.size().first>v.size().second)
-                return v-(2*(data|v)/(data|data))*data;
+                return v-((data|v)/l)*data;
             else
-                return v-(2*(v*data)/(data|data))*data.transposed();
+                return v-((v*data)/l)*data.transposed();
         }
 
         VMatrix<dtype> operator()(const VMatrix<dtype>& M)
         {
             VMatrix<dtype> res(M);
-            for (uint32_t i=start;i<res.size().second;i++) res[i]=(*this)(res[i]);
+            for (uint32_t i=0;i<res.size().second;i++) res[i]=(*this)(res[i]);
             return res;
         }
 };
@@ -46,7 +49,7 @@ template<typename dtype>
 class QHaushold
 {
     private:
-    bool order=1;
+    bool order=0;
     std::vector<HausholdOP<dtype>> data;
     public:
 
@@ -60,7 +63,7 @@ class QHaushold
     }
 
     template <typename  Mtype>
-    requires IsMatrix<dtype, Mtype>
+    requires IsMatrix<dtype, Mtype> && (!std::is_same<Mtype, Vector<dtype>>::value)
     VMatrix<dtype> operator()(const Mtype& M)
     {
         VMatrix<dtype> res(M);
@@ -94,19 +97,18 @@ std::pair<QHaushold<dtype>, VMatrix<dtype>> QRdecompositionH(const Mtype& M)
     Vector<dtype> v(M.size().first);
 
     if (R.size().first<R.size().second) throw std::runtime_error("For QR decomposition matrix with sizes MxN is needed to be M>N");
-    for (uint32_t i=0;i<R.size().second;i++)
+    for (uint32_t i=0;i<R.size().second-1;i++)
     {
         //std::cout<<R<<std::endl;
-        dtype l=R[i].lenght();
         v=R[i];
-        v[i]-=l*(v[i]>0?1:-1);
-        if (v.lenght()==0) continue;
         for (uint32_t idx=0;idx<i;idx++)
             v[idx]=0;
-        std::cout<<v<<std::endl;
+        v[i]+=v.lenght()*(v[i]>0?1:-1);
+        if (v.lenght()==0) continue;
+        //std::cout<<v<<std::endl;
         Q.data.emplace_back(v,i);
         for (uint32_t idx=i;idx<R.size().second;idx++)
-            R.gv(idx)=Q.data.back()(R[idx]);
+            R[idx]=Q.data.back()(R[idx]);
     }
     return std::make_pair(Q, R);
 }

@@ -47,6 +47,11 @@ target_link_libraries(qrTestm PUBLIC MATRIX PRIVATE GTest::gtest_main)
 target_compile_features(qrTestm PRIVATE ${TARGET_CXX_STANDARD})
 gtest_discover_tests(qrTestm)
 
+add_executable( qrSolvTest qr_solve_test.cpp)
+target_link_libraries(qrSolvTest PUBLIC MATRIX PRIVATE GTest::gtest_main)
+target_compile_features(qrSolvTest PRIVATE ${TARGET_CXX_STANDARD})
+gtest_discover_tests(qrSolvTest)
+
 add_executable( itTestm it_test_m.cpp)
 target_link_libraries(itTestm MATRIX)
 target_compile_features(itTestm PRIVATE ${TARGET_CXX_STANDARD})
