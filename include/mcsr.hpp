@@ -87,7 +87,7 @@ class MCSR: public IMatrix<dtype>
                 uint32_t idx;
                 uint32_t i;
             public:
-                Iterator(const MCSR<dtype>& M, uint32_t idx_):IIterator<dtype>(M),idx(idx_),i(0){while (M.rows[i+1]<=idx && (i+1)!=M.rows.size()-1) i++;}
+                Iterator(const MCSR<dtype>& M, uint32_t idx_):IIterator<dtype>(M),idx(idx_),i(0){while (M.rows[i+1]<=idx && idx!=M.vals.size()) i++;}
                 void operator++()
                 {
                     //if (
@@ -96,7 +96,7 @@ class MCSR: public IMatrix<dtype>
                         /*if (idx!=sptr->vals.size()) 
                         {*/
                             idx++;
-                            while (sptr->rows[i+1]<=idx && (i+1)!=sptr->rows.size()-1) i++;
+                            while (sptr->rows[i+1]<=idx && idx!=sptr->vals.size()) i++;
                         //}
                     //}
                     //else

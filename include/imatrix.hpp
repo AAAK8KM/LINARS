@@ -465,11 +465,11 @@ class VMatrix: public IMatrix<dtype>
                 {
                     const VMatrix<dtype>* sptr = static_cast<const VMatrix<dtype>*>(this->wptr);
                     idx++;
-                    jt++;
-                    if (jt==sptr->m)
+                    it++;
+                    if (it==sptr->n)
                     {
-                        jt=0;
-                        it++;
+                        it=0;
+                        jt++;
                     }
                     /*if (const Matrix<dtype>* sptr = static_cast<const Matrix<dtype>*>(this->wptr))
                     {
@@ -507,9 +507,7 @@ extern template class VMatrix<float>;
 
 #ifndef Dvector
 extern template class Vector<double>;
-//extern double operator*(const Vector<double>&,const Vector<double>&);
 extern template class Vector<float>;
-//extern float operator*(const Vector<float>&,const Vector<float>&);
 #endif
 
 }
