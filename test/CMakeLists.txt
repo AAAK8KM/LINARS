@@ -52,6 +52,11 @@ target_link_libraries(qrSolvTest PUBLIC MATRIX PRIVATE GTest::gtest_main)
 target_compile_features(qrSolvTest PRIVATE ${TARGET_CXX_STANDARD})
 gtest_discover_tests(qrSolvTest)
 
+add_executable( implictSolvTest implictsolvers_test.cpp)
+target_link_libraries(implictSolvTest PUBLIC MATRIX PRIVATE GTest::gtest_main)
+target_compile_features(implictSolvTest PRIVATE ${TARGET_CXX_STANDARD})
+gtest_discover_tests(implictSolvTest)
+
 add_executable( itTestm it_test_m.cpp)
 target_link_libraries(itTestm MATRIX)
 target_compile_features(itTestm PRIVATE ${TARGET_CXX_STANDARD})
@@ -64,7 +69,7 @@ add_executable( t1Testm time_test.cpp)
 target_link_libraries(t1Testm MATRIX)
 target_compile_features(t1Testm PRIVATE ${TARGET_CXX_STANDARD})
 
-set(TDEPS basicIOTest mulTest tomasTest mcsrTest mdokTest mxvTest vectorTest qrTestm)
+set(TDEPS basicIOTest mulTest tomasTest mcsrTest mdokTest mxvTest vectorTest qrSolvTest qrTestm implictSolvTest)
 
 set(TEST_CONFIGS
     "basicIOTest d test/io1"

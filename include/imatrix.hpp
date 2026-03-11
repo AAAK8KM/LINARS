@@ -132,7 +132,7 @@ class Vector: public IMatrix<dtype>
         Vector(std::pair<uint32_t, uint32_t> s):transp(s.first<s.second),data(s.first<s.second?s.second:s.first)
         {if ((s.first>s.second?s.second:s.first)!=1) throw std::runtime_error("Wrong vector size to create!");}
         Vector(std::vector<dtype>& v, bool t=0):transp(t),data(v){}
-        Vector(IMatrix<dtype>& M){
+        Vector(const IMatrix<dtype>& M){
             auto p=M.size();
             if (p.second!=1 && p.first!=1) throw std::runtime_error("Too big mstrix to become vector");
 
@@ -141,14 +141,14 @@ class Vector: public IMatrix<dtype>
                 this->transp=false;
                 this->data.resize(p.first);
                 for (uint32_t i=0;i<p.first;i++)
-                    (this->data)[i]=M.gev(i, 1);
+                    (this->data)[i]=M.gev(i, 0);
             }
             else
             {
                 this->transp=true;
                 this->data.resize(p.second);
                 for (uint32_t i=0;i<p.second;i++)
-                    (this->data)[i]=M.gev(1, i);
+                    (this->data)[i]=M.gev(0, i);
             }
         }
 
@@ -448,6 +448,11 @@ class VMatrix: public IMatrix<dtype>
         };
 
         Vector<dtype>& operator[](const uint32_t j)
+        {
+            return data[j];
+        };
+
+        const Vector<dtype>& operator[](const uint32_t j) const
         {
             return data[j];
         };
