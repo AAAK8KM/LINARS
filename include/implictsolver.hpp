@@ -13,8 +13,8 @@
 
 namespace LINARS {
 
-    constexpr uint32_t preset_max_iter=1000;
-    constexpr long double preset_max_r=1e-6;
+    constexpr uint32_t preset_max_iter=10000;
+    constexpr long double preset_max_r=1e-9;
 
     template<typename dtype, typename Mtype>
     requires IsMatrix<dtype, Mtype>
@@ -72,12 +72,10 @@ namespace LINARS {
                 for (;promise.size()>0;)
                 {
                     auto [i,j,c] = promise.back();
-                    //std::cout<<i<<" "<<j<<std::endl;
                     x[i]-=x[j]*c/A.gev(i,i);
                     promise.pop_back();
                 }
                 r=A*x-b;
-                //std::cout<<"err="<<(r|r)<<" "<<iter<<std::endl<<x<<std::endl;
                 mes_r=std::max(mes_r,r|r);
                 sol[si]=x;
             }
