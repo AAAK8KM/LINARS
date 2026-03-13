@@ -13,8 +13,8 @@
 
 namespace LINARS {
 
-    constexpr uint32_t preset_max_iter=10000;
-    constexpr long double preset_max_r=1e-9;
+    constexpr const uint32_t preset_max_iter=10000;
+    constexpr const long double preset_max_r=1e-9;
 
     template<typename dtype, typename Mtype>
     requires IsMatrix<dtype, Mtype>
@@ -34,9 +34,9 @@ namespace LINARS {
                 for (auto [i,j,c]: A)
                     if (i!=j) x[i]-=sol[si][j]*c;
                 for (uint32_t i=0;i<A.size().first;i++) 
-                    x[i]/=A.gev(i,i);
+                    x[i]/=A.ge(i,i);
                 r=A*x-b;
-                mes_r=std::max(mes_r,r|r);
+                mes_r=std::max(mes_r,std::sqrt(r|r));
                 sol[si]=x;
             }
         }
@@ -67,16 +67,16 @@ namespace LINARS {
                 std::sort(promise.begin(),promise.end(),std::greater<decltype(promise.back())>());
                 
                 for (uint32_t i=0;i<A.size().first;i++)
-                    x[i]/=A.gev(i,i);
+                    x[i]/=A.ge(i,i);
 
                 for (;promise.size()>0;)
                 {
                     auto [i,j,c] = promise.back();
-                    x[i]-=x[j]*c/A.gev(i,i);
+                    x[i]-=x[j]*c/A.ge(i,i);
                     promise.pop_back();
                 }
                 r=A*x-b;
-                mes_r=std::max(mes_r,r|r);
+                mes_r=std::max(mes_r,std::sqrt(r|r));
                 sol[si]=x;
             }
         }
@@ -98,7 +98,7 @@ namespace LINARS {
             {
                 Vector<dtype> r=A*sol[i]-b;
                 sol[i]=sol[i]-r*tau;
-                mes_r=std::max(mes_r,r|r);
+                mes_r=std::max(mes_r,std::sqrt(r|r));
             }
         }
         return sol;

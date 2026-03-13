@@ -1,6 +1,7 @@
 #ifndef imatrix_hpp__
 #define imatrix_hpp__
 
+#include <algorithm>
 #include <cassert>
 #include <cmath>
 #include <cstddef>
@@ -305,6 +306,15 @@ dtype operator|(const Vector<dtype> &lhs,const Vector<dtype> &rhs)
     dtype res=0;
     for (uint32_t i=0;i<lhs.data.size();i++)
         res+=(lhs.data)[i]*(rhs.data)[i];
+    return res;
+}
+
+template<typename dtype>
+dtype norm2(const Vector<dtype> &lhs)
+{
+    dtype res=0;
+    for (uint32_t i=0;i<lhs.size().first | i<lhs.size().second ;i++)
+        res=std::max(res,std::abs(lhs[i]));
     return res;
 }
 

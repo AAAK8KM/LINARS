@@ -4,8 +4,8 @@
 #include <utility>
 #include <chrono>
 
-template<typename dret, typename... dargs>
-std::pair<dret, double> ms_timer(dret(&func)(dargs...), const dargs&...  args)
+template<typename dfunc, typename... dargs>
+auto ms_timer(dfunc& func, const dargs&... args)
 {
     auto start = std::chrono::high_resolution_clock::now();
     auto res = func(args...);
