@@ -53,7 +53,7 @@ class IMatrix
             Matrix<dtype> C(this->size().first,B.size().second);
             for (uint32_t i=0;i<this->size().first;i++)
                 for (uint32_t j=0;j<B.size().second;j++)
-                    for (uint32_t k=0;k<this->size().first;k++)
+                    for (uint32_t k=0;k<this->size().second;k++)
                         C.ge(i, j)+=this->gev(i, k)*B.gev(k, j);
             return C;
         }
@@ -87,7 +87,7 @@ requires IsMatrix<dtype, Mtype>
 Vector<dtype> operator*(const Mtype& A,const Vector<dtype>& B)
 {
     if (A.size().second!=B.size().first) throw std::runtime_error("Matrix and vector has worng sizes. Can not multiply!");
-    Vector<dtype> C(B.size());
+    Vector<dtype> C(A.size().first);
     for (auto [i,j,c]: A)
         C[i]+=c*B[j];
     return C;
@@ -313,7 +313,7 @@ template<typename dtype>
 dtype norm2(const Vector<dtype> &lhs)
 {
     dtype res=0;
-    for (uint32_t i=0;i<lhs.size().first | i<lhs.size().second ;i++)
+    for (uint32_t i=0;i<lhs.size().first || i<lhs.size().second ;i++)
         res=std::max(res,std::abs(lhs[i]));
     return res;
 }
@@ -370,7 +370,7 @@ class Matrix: public IMatrix<dtype>
                 uint32_t it,jt;
             public:
                 Iterator(const Matrix<dtype>& M, size_t idx_):IIterator<dtype>(M),idx(idx_),
-                        it(static_cast<uint32_t>(idx_/M.m)),jt(static_cast<uint32_t>(idx_/M.m)){}
+                        it(static_cast<uint32_t>(idx_/M.m)),jt(static_cast<uint32_t>(idx_%M.m)){}
                 void operator++()
                 {
                     const Matrix<dtype>* sptr = static_cast<const Matrix<dtype>*>(this->wptr);
@@ -477,7 +477,7 @@ class VMatrix: public IMatrix<dtype>
                 uint32_t it,jt;
             public:
                 Iterator(const VMatrix<dtype>& M, size_t idx_):IIterator<dtype>(M),idx(idx_),
-                        it(static_cast<uint32_t>(idx_/M.m)),jt(static_cast<uint32_t>(idx_/M.m)){}
+                        it(static_cast<uint32_t>(idx_%M.m)),jt(static_cast<uint32_t>(idx_/M.n)){}
                 void operator++()
                 {
                     const VMatrix<dtype>* sptr = static_cast<const VMatrix<dtype>*>(this->wptr);

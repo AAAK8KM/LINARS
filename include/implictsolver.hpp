@@ -37,7 +37,7 @@ namespace LINARS {
                     if (i!=j) x[i]-=sol[si][j]*c;
                 for (uint32_t i=0;i<A.size().first;i++) 
                     x[i]/=A.ge(i,i);
-                r=A*x-b;
+                r=A*x-b[si];
                 mes_r=std::max(mes_r,std::sqrt(r|r));
                 sol[si]=x;
             }
@@ -77,7 +77,7 @@ namespace LINARS {
                     x[i]-=x[j]*c/A.ge(i,i);
                     promise.pop_back();
                 }
-                r=A*x-b;
+                r=A*x-b[si];
                 mes_r=std::max(mes_r,std::sqrt(r|r));
                 sol[si]=x;
             }
@@ -98,7 +98,7 @@ namespace LINARS {
             mes_r=0;
             for (uint32_t i=0;i<b.size().second;i++)
             {
-                Vector<dtype> r=A*sol[i]-b;
+                Vector<dtype> r=A*sol[i]-b[i];
                 sol[i]=sol[i]-r*tau;
                 mes_r=std::max(mes_r,std::sqrt(r|r));
             }
@@ -139,7 +139,7 @@ namespace LINARS {
             mes_r=0;
             for (uint32_t i=0;i<b.size().second;i++)
             {
-                Vector<dtype> r=A*sol[i]-b;
+                Vector<dtype> r=A*sol[i]-b[i];
                 sol[i]=sol[i]-r/t[biter];
                 mes_r=std::max(mes_r,std::sqrt(r|r));
             }
