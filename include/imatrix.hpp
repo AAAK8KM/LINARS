@@ -477,7 +477,7 @@ class VMatrix: public IMatrix<dtype>
                 uint32_t it,jt;
             public:
                 Iterator(const VMatrix<dtype>& M, size_t idx_):IIterator<dtype>(M),idx(idx_),
-                        it(static_cast<uint32_t>(idx_%M.m)),jt(static_cast<uint32_t>(idx_/M.n)){}
+                        it(static_cast<uint32_t>(idx_%M.n)),jt(static_cast<uint32_t>(idx_/M.n)){}
                 void operator++()
                 {
                     const VMatrix<dtype>* sptr = static_cast<const VMatrix<dtype>*>(this->wptr);
