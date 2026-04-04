@@ -117,24 +117,33 @@ int main(){
     
 }*/
 
+void foo(){};
+
 int main()
 {
     Matrix<double> A(3,3);
     A[0, 0]=10;
     A[1, 1]=10;
     A[2, 2]=10;
-    A[2, 0]=1;
+    A[2, 0]=2;
     A[0, 2]=1;
     VMatrix<double> b(3,1);
     b[0, 0]=1;
     b[1, 0]=2;
     b[2, 0]=3;
     VMatrix<double> x(3,1);
-    for (uint32_t i=0;i<5;i++)
+
+    for (auto& pr: SSORPrep<double,Matrix<double>>(A))
     {
-        x=SSORStep(A, b,x);
-        std::cout<<x<<std::endl;
+        std::cout<<"a\n";
+        for (auto [i,j,c]: pr)
+            std::cout<<i<<" "<<j<<" "<<c<<std::endl;
+        std::cout<<std::endl;
     }
-    ChebSymAccel(A,b,std::function(SSORStep<double,Matrix<double>>),0.9);
+    auto l = [p=SSORPrep<double,Matrix<double>>(A)](const Matrix<double>& A, const VMatrix<double>& b,const VMatrix<double>& prev)->VMatrix<double>{
+        return SSORStep<double,Matrix<double>>(A,b,prev,p);
+    };
+    x=ChebSymAccel(A,b,std::function<StepSig<double, Matrix<double>>>(l),0.9);
+    std::cout<<x<<std::endl;
 
 }

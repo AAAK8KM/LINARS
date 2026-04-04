@@ -6,6 +6,7 @@
 #include <cmath>
 #include <cstddef>
 #include <cstdint>
+#include <exception>
 #include <memory>
 #include <stdexcept>
 #include <tuple>
@@ -143,6 +144,15 @@ class Vector: public IMatrix<dtype>
         Vector(std::pair<uint32_t, uint32_t> s):transp(s.first<s.second),data(s.first<s.second?s.second:s.first)
         {if ((s.first>s.second?s.second:s.first)!=1) throw std::runtime_error("Wrong vector size to create!");}
         Vector(std::vector<dtype>& v, bool t=0):transp(t),data(v){}
+        Vector& operator=(const Vector& rhs) 
+        {
+            if (this->size().first!=rhs.size().first || this->size().second!=rhs.size().second) [[unlikely]] throw std::runtime_error("Wrong vector sizes on copy");
+            std::copy(rhs.data.begin(), rhs.data.end(), data.begin());
+            return *this;
+        }
+
+        Vector(const Vector& rhs) = default;
+
         Vector(const IMatrix<dtype>& M){
             auto p=M.size();
             if (p.second!=1 && p.first!=1) throw std::runtime_error("Too big mstrix to become vector");
@@ -429,6 +439,14 @@ class VMatrix: public IMatrix<dtype>
         VMatrix(uint32_t n_, uint32_t m_):data(static_cast<std::size_t>(m_),Vector<dtype>(n_)),n(n_),m(m_){}
         VMatrix(std::pair<uint32_t, uint32_t> s):VMatrix(s.first,s.second){}
 
+        VMatrix& operator=(const VMatrix& rhs) {
+            if (this->size().first!=rhs.size().first || this->size().second!=rhs.size().second) [[unlikely]] throw std::runtime_error("Wrong VMatrix sizes on copy");
+            std::copy(rhs.data.begin(), rhs.data.end(), data.begin());
+            return *this;
+        }
+
+        VMatrix(const VMatrix& rhs) = default;
+
         template<typename  Mtype>
         requires IsMatrix<dtype, Mtype>
         VMatrix(const Mtype& M){
@@ -437,9 +455,7 @@ class VMatrix: public IMatrix<dtype>
             this->n=p.first;
             this->m=p.second;
 
-            this->data.resize(m);
-            for (uint32_t i=0;i<m;i++)
-                data[i]=Vector<dtype>(n);
+            this->data.resize(m,Vector<dtype>(n));
 
             for (auto [i,j,c] : M)
                     this->data[j][i]=c;

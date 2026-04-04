@@ -29,14 +29,16 @@ namespace LINARS {
         dtype mes_r=std::numeric_limits<dtype>::max();
         uint32_t iter=0;
         Vector<dtype> x(b.size().first);
-        Vector<dtype> r;
+        Vector<dtype> r(b.size().first);
         while (iter++<max_iter && mes_r>max_r) {
             mes_r=0;
             for (uint32_t si=0;si<b.size().second;si++)
             {
                 x=b[si];
                 for (auto [i,j,c]: A)
-                    if (i!=j) x[i]-=sol[si][j]*c;
+                    if (c!=0) [[unlikely]]
+                        if (i!=j) [[likely]]
+                            x[i]-=sol[si][j]*c;
                 for (uint32_t i=0;i<A.size().first;i++) 
                     x[i]/=A.ge(i,i);
                 r=A*x-b[si];
@@ -56,9 +58,10 @@ namespace LINARS {
         dtype mes_r=std::numeric_limits<dtype>::max();;
         uint32_t iter=0;
         Vector<dtype> x(b.size().first);
-        Vector<dtype> r;
+        Vector<dtype> r(b.size().first);
         std::vector<std::tuple<uint32_t,uint32_t,dtype>> promise; //promised for whom, required, const
         promise.reserve(b.size().first*4); //4 is a funny constant
+        bool first=true;
         while (iter++<max_iter && mes_r>max_r) {
             mes_r=0;
             for (uint32_t si=0;si<b.size().second;si++)
@@ -66,18 +69,24 @@ namespace LINARS {
                 x=b[si];
                 for (auto [i,j,c]: A)
                     if (i<j) x[i]-=sol[si][j]*c;
-                    else if (i!=j) promise.emplace_back(i,j,c); //will be fast because of smart alloc
+                    else 
+                        if (first) [[unlikely]]
+                            if (c!=0) [[unlikely]]
+                                if (i!=j) [[likely]]
+                                    promise.emplace_back(i,j,c); //will be fast because of smart alloc
                 
-                std::sort(promise.begin(),promise.end(),std::greater<decltype(promise.back())>());
-                
+                if (first) [[unlikely]]
+                {
+                    std::sort(promise.begin(),promise.end(),std::less<decltype(promise.back())>());
+                    first=false;
+                }
+
                 for (uint32_t i=0;i<A.size().first;i++)
                     x[i]/=A.ge(i,i);
 
-                for (;promise.size()>0;)
+                for (auto& [i,j,c]: promise)
                 {
-                    auto [i,j,c] = promise.back();
-                    x[i]-=x[j]*c/A.ge(i,i);
-                    promise.pop_back();
+                    x[i]-=x[j]*(c/A[i,i]);
                 }
                 r=A*x-b[si];
                 mes_r=std::max(mes_r,std::sqrt(r|r));
@@ -150,24 +159,33 @@ namespace LINARS {
         return sol;
     }
 
+    template<typename dtype, typename Mtype>
+    using StepSig = VMatrix<dtype>(const Mtype&, const VMatrix<dtype>&,const VMatrix<dtype>&);
 
-    template<uint32_t batch,typename dtype, typename Mtype>
+    template<typename dtype, typename Mtype>
     requires IsMatrix<dtype, Mtype>
-    VMatrix<dtype> ChebSymAccel(const Mtype& A, const VMatrix<dtype>& b, std::function<VMatrix<dtype>(const Mtype&, const VMatrix<dtype>&,const VMatrix<dtype>&)> step, dtype rho, uint32_t max_iter=preset_max_iter, dtype max_r=preset_max_r)
+    VMatrix<dtype> ChebSymAccel(const Mtype& A, const VMatrix<dtype>& b, std::function<StepSig<dtype, Mtype>> step, dtype rho, uint32_t max_iter=preset_max_iter, dtype max_r=preset_max_r)
     {
         if (A.size().first!=b.size().first) throw std::runtime_error("Invalid linar system");
         VMatrix<dtype> sol(b.size()),tmp(b.size());
+        sol=step(A,b,tmp);
         dtype mes_r=std::numeric_limits<dtype>::max();
         uint32_t iter=0;
-        std::array<dtype, 3> mu={1,1/rho,2/(rho*rho)-1};
+        //std::array<dtype, 3> mu={1,1/rho,2/(rho*rho)-1};
+        std::array<dtype, 3> n={1,1/rho,rho-2/rho}; // n[k]=mu[k]/mu[k-1] - want to be near 1
+        //n[0] is not used
         while (iter++<max_iter && mes_r>max_r) {
-            tmp=std::exchange(sol, 2*mu[1]/(rho*mu[2]) * step(A,b,sol) - mu[0]/mu[2] * tmp);
-            mu[0]=mu[1];
-            mu[1]=std::exchange(mu[2], 2*mu[2]/rho-mu[1]);
+            //                                                     this is bad but faster v
+            tmp=std::exchange(sol, (2/(rho*n[2])) * step(A,b,sol) - tmp*(1/(n[2]*n[1])));  
+            //mu[0]=mu[1];
+            //mu[1]=std::exchange(mu[2], 2*mu[2]/rho-mu[1]);
+            n[1]=n[2];
+            n[2]=2/rho-1/n[1];
             mes_r=0;
             for (uint32_t i=0;i<b.size().second;i++)
                 mes_r=std::max(mes_r,(A*sol[i]-b[i]).lenght());
         }
+        //std::cout<<mu[0]<<mu[1]<<mu[2]<<std::endl;
         return sol;
     }
     

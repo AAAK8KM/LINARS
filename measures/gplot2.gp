@@ -22,4 +22,5 @@ set output 'Impl_NumVsErr.png'
 plot 'simple.csv'  using 1:4 smooth unique title "Simple" with points pt 7 lc rgb "red", \
      'simplecheb.csv'  using 1:4 smooth unique title "Simple+Chebishev" with points pt 7 lc rgb "yellow", \
      'jacobi.csv'  using 1:4 smooth unique title "Jacobi" with points pt 6 lc rgb "blue", \
-     'gauszeidel.csv'  using 1:4 smooth unique title "GausZeidel" with points pt 6 lc rgb "green"
+     'gauszeidel.csv'  using 1:4 smooth unique title "GausZeidel" with points pt 6 lc rgb "green", \
+     'ssorchb.csv'  using 1:4 smooth unique title "SSOR+Cheb" with points pt 6 lc rgb "purple"
