@@ -6,11 +6,13 @@
 #include <algorithm>
 #include <array>
 #include <cstdint>
+#include <functional>
 #include <iostream>
 #include <chebishev.hpp>
 #include <ostream>
 #include <stdexcept>
 #include <tuple>
+#include <utility>
 #include <vector>
 
 namespace LINARS {
@@ -148,6 +150,27 @@ namespace LINARS {
         return sol;
     }
 
+
+    template<uint32_t batch,typename dtype, typename Mtype>
+    requires IsMatrix<dtype, Mtype>
+    VMatrix<dtype> ChebSymAccel(const Mtype& A, const VMatrix<dtype>& b, std::function<VMatrix<dtype>(const Mtype&, const VMatrix<dtype>&,const VMatrix<dtype>&)> step, dtype rho, uint32_t max_iter=preset_max_iter, dtype max_r=preset_max_r)
+    {
+        if (A.size().first!=b.size().first) throw std::runtime_error("Invalid linar system");
+        VMatrix<dtype> sol(b.size()),tmp(b.size());
+        dtype mes_r=std::numeric_limits<dtype>::max();
+        uint32_t iter=0;
+        std::array<dtype, 3> mu={1,1/rho,2/(rho*rho)-1};
+        while (iter++<max_iter && mes_r>max_r) {
+            tmp=std::exchange(sol, 2*mu[1]/(rho*mu[2]) * step(A,b,sol) - mu[0]/mu[2] * tmp);
+            mu[0]=mu[1];
+            mu[1]=std::exchange(mu[2], 2*mu[2]/rho-mu[1]);
+            mes_r=0;
+            for (uint32_t i=0;i<b.size().second;i++)
+                mes_r=std::max(mes_r,(A*sol[i]-b[i]).lenght());
+        }
+        return sol;
+    }
+    
 }
 
 

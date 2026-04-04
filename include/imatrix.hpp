@@ -42,7 +42,17 @@ class IMatrix
     public:
         virtual dtype& ge(const uint32_t i, const uint32_t j) = 0;
         virtual const dtype& ge(const uint32_t i, const uint32_t j) const = 0;
-        
+
+        dtype& operator[](const uint32_t i, const uint32_t j)
+        {
+            return this->ge(i, j);
+        };
+
+        const dtype&  operator[](const uint32_t i, const uint32_t j) const
+        {
+            return this->ge(i, j);
+        };
+
         virtual dtype gev(const uint32_t i, const uint32_t j) const = 0;
 
         inline virtual const std::pair<uint32_t, uint32_t> size() const = 0;
@@ -456,6 +466,16 @@ class VMatrix: public IMatrix<dtype>
         {
             return data[j];
         };
+
+        using IMatrix<dtype>::operator[];
+
+        VMatrix operator-(const VMatrix<dtype> rhs) const
+        {
+            VMatrix<dtype> res(*this);
+            for (uint32_t i=0;i<this->m;i++)
+                res[i]=(*this)[i]-rhs[i];
+            return res;
+        }
 
         Vector<dtype>& operator[](const uint32_t j)
         {

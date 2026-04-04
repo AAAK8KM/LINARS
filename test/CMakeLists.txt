@@ -73,6 +73,10 @@ add_executable( implictTimeTestm time_implict_measeure.cpp)
 target_link_libraries(implictTimeTestm MATRIX)
 target_compile_features(implictTimeTestm PRIVATE ${TARGET_CXX_STANDARD})
 
+add_executable( ctrl test_1.cpp)
+target_link_libraries(ctrl MATRIX)
+target_compile_features(ctrl PRIVATE ${TARGET_CXX_STANDARD})
+
 set(TDEPS basicIOTest mulTest tomasTest mcsrTest mdokTest mxvTest vectorTest qrSolvTest qrTestm implictSolvTest)
 
 set(TEST_CONFIGS
