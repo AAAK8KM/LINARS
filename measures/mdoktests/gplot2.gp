@@ -19,8 +19,8 @@ set output 'Impl_NumVsErr.png'
 # Plot command
 # 'every ::1' skips the header line
 # 'smooth unique' groups by column 1 (n) and calculates the average of the Y column
-plot 'CGD.csv'  using 1:4 smooth unique title "CGD" with points pt 7 lc rgb "red", \
-     'sor.csv'  using 1:4 smooth unique title "SOR" with points pt 7 lc rgb "yellow", \
-     'SteeperGD.csv'  using 1:4 smooth unique title "SteeperGD" with points pt 6 lc rgb "blue", \
+plot 'simple.csv'  using 1:4 smooth unique title "Simple" with points pt 7 lc rgb "red", \
+     'simplecheb.csv'  using 1:4 smooth unique title "Simple+Chebishev" with points pt 7 lc rgb "yellow", \
+     'jacobi.csv'  using 1:4 smooth unique title "Jacobi" with points pt 6 lc rgb "blue", \
      'gauszeidel.csv'  using 1:4 smooth unique title "GausZeidel" with points pt 6 lc rgb "green", \
      'ssorchb.csv'  using 1:4 smooth unique title "SSOR+Cheb" with points pt 6 lc rgb "purple"

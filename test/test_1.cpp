@@ -1,5 +1,6 @@
 #include "imatrix.hpp"
 #include "mcsr.hpp"
+#include "mgenerator.hpp"
 #include "implictstep.hpp"
 #include "implictsolver.hpp"
 #include "qrdec.hpp"
@@ -117,9 +118,8 @@ int main(){
     
 }*/
 
-void foo(){};
 
-int main()
+/*int main()
 {
     Matrix<double> A(3,3);
     A[0, 0]=10;
@@ -146,4 +146,10 @@ int main()
     x=ChebSymAccel(A,b,std::function<StepSig<double, Matrix<double>>>(l),0.9);
     std::cout<<x<<std::endl;
 
+}*/
+
+int main()
+{
+    MCSR<double> M = PuassonTask0<double,MCSR<double>>(5,5);
+    std::cout<<M;
 }

@@ -58,14 +58,15 @@ class IMatrix
 
         inline virtual const std::pair<uint32_t, uint32_t> size() const = 0;
 
-        virtual Matrix<dtype> operator*(const IMatrix& B) const
+        template<typename  Mtype2>
+        requires IsMatrix<dtype, Mtype2>
+        Matrix<dtype> operator*(const Mtype2& B)
         {
-            if (this->size().second!=B.size().first) throw std::runtime_error("Matrixes has worng sizes. Can not multiply!");
+            if (this->size().second!=B.size().first) throw std::runtime_error("Matrix and vector has worng sizes. Can not multiply!");
             Matrix<dtype> C(this->size().first,B.size().second);
             for (uint32_t i=0;i<this->size().first;i++)
-                for (uint32_t j=0;j<B.size().second;j++)
-                    for (uint32_t k=0;k<this->size().second;k++)
-                        C.ge(i, j)+=this->gev(i, k)*B.gev(k, j);
+                for (auto [k,j,c]: B)
+                    C[i,j]+=(*this).gev(i,k)*c;
             return C;
         }
 
@@ -208,6 +209,14 @@ class Vector: public IMatrix<dtype>
             Vector v2(*this);
             for (uint32_t i=0;i<data.size();i++)
                 (v2.data)[i]-=(rhs.data)[i];
+            return v2;
+        }
+
+        Vector operator-() const
+        {
+            Vector v2(this->size());
+            for (uint32_t i=0;i<data.size();i++)
+                (v2.data)[i]=-(this->data)[i];
             return v2;
         }
 

@@ -18,6 +18,8 @@ class MDOK: public IMatrix<dtype>
         std::uint32_t n,m;
     public:
         MDOK(const std::pair<uint32_t, uint32_t>& size):n(size.first),m(size.second){}
+
+        MDOK(const uint32_t& n_, const uint32_t& m_):n(n_),m(m_){}
         
         template<typename  Mtype>
         requires IsMatrix<dtype, Mtype>
