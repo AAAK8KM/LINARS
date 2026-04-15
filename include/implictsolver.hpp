@@ -132,6 +132,7 @@ namespace LINARS {
             {
                 r=A*sol[i]-b[i];
                 dtype tau=(r|r)/(r|(A*r));
+                if (!(tau==tau)) break;
                 sol[i]=sol[i]-r*tau;
                 mes_r=std::max(mes_r,std::sqrt(r|r));
             }

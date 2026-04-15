@@ -23,7 +23,7 @@ std::mt19937 rng(dev());
 int main()
 {
     constexpr const uint32_t s=500;
-    constexpr const uint32_t size=s*s, max_test_it=100, max_test_num=50;
+    constexpr const uint32_t size=s*s, max_test_it=50, max_test_num=50;
     constexpr const uint32_t test_it_step=max_test_it/max_test_num;
     VMatrix<long double> b(size,1), exp(size,1);
     std::uniform_real_distribution<long double> dist(0.1,0.9);
