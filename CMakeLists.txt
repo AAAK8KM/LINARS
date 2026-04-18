@@ -4,7 +4,7 @@ project( LINARS  LANGUAGES CXX)
 # Set standarts
 # ----------------------------------------------
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(TARGET_CXX_STANDARD cxx_std_23)
+set(TARGET_CXX_PARAM CXX_STANDARD 23 CXX_STANDARD_REQUIRED ON CXX_EXTENSIONS OFF)
 if(MSVC)
     set(COMPILE_FLAGS /W4 /WX /permissive-)
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang|AppleClang|Intel")

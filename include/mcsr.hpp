@@ -126,10 +126,10 @@ class MCSR: public IMatrix<dtype>
         Iterator end()const{return MCSR<dtype>::Iterator(*this,static_cast<uint32_t>(vals.size()));}
 };
 
-#ifndef Dmcsr
+/*#ifndef Dmcsr
 extern template class MCSR<double>;
 extern template class MCSR<float>;
-#endif
+#endif*/
 
 }
 

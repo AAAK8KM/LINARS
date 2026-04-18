@@ -1,7 +1,7 @@
 #ifndef qrdec_h__
 #define qrdec_h__
 
-#include "imatrix.hpp"
+#include "matrixes.hpp"
 #include <algorithm>
 #include <cstddef>
 #include <cstdint>

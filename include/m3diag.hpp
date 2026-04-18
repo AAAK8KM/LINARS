@@ -1,6 +1,7 @@
 #ifndef m3diag_hpp__
 #define m3diag_hpp__
 
+#include "types.hpp"
 #include "imatrix.hpp"
 #include <cstddef>
 #include <cstdint>
@@ -113,10 +114,10 @@ class M3diag: public IMatrix<dtype>
         
 };
 
-#ifndef Dm3diag
+/*#ifndef Dm3diag
 extern template class M3diag<double>;
 extern template class M3diag<float>;
-#endif
+#endif*/
 
 }
 

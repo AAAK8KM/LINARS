@@ -7,16 +7,16 @@ message("${CMAKE_CURRENT_SOURCE_DIR}")
 # ----------------------------------------------
 add_executable( basicIOTest basic_io_test.cpp)
 target_link_libraries(basicIOTest MATRIX)
-target_compile_features(basicIOTest PRIVATE ${TARGET_CXX_STANDARD})
+set_target_properties(basicIOTest PROPERTIES ${TARGET_CXX_PARAM})
 
 add_executable( mulTest mul_test.cpp)
 target_link_libraries(mulTest MATRIX)
-target_compile_features(mulTest PRIVATE ${TARGET_CXX_STANDARD})
+set_target_properties(mulTest PROPERTIES ${TARGET_CXX_PARAM})
 
 add_executable( tomasTest tomas_test.cpp)
 target_link_libraries(tomasTest MATRIX TOMAS)
 target_compile_options(tomasTest PRIVATE -O3)
-target_compile_features(tomasTest PRIVATE ${TARGET_CXX_STANDARD})
+set_target_properties(tomasTest PROPERTIES ${TARGET_CXX_PARAM})
 
 
 find_package(GTest REQUIRED)
@@ -24,62 +24,62 @@ include(GoogleTest)
 
 add_executable( mdokTest mdok_test.cpp)
 target_link_libraries(mdokTest PUBLIC MATRIX  PRIVATE GTest::gtest_main)
-target_compile_features(mdokTest PRIVATE ${TARGET_CXX_STANDARD})
+set_target_properties(mdokTest PROPERTIES ${TARGET_CXX_PARAM})
 gtest_discover_tests(mdokTest)
 
 add_executable( mcsrTest mcsr_test.cpp)
 target_link_libraries(mcsrTest PUBLIC MATRIX PRIVATE GTest::gtest_main)
-target_compile_features(mcsrTest PRIVATE ${TARGET_CXX_STANDARD})
+set_target_properties(mcsrTest PROPERTIES ${TARGET_CXX_PARAM})
 gtest_discover_tests(mcsrTest)
 
 add_executable( vectorTest vector_test.cpp)
 target_link_libraries(vectorTest PUBLIC MATRIX PRIVATE GTest::gtest_main)
-target_compile_features(vectorTest PRIVATE ${TARGET_CXX_STANDARD})
+set_target_properties(vectorTest PROPERTIES ${TARGET_CXX_PARAM})
 gtest_discover_tests(vectorTest)
 
 add_executable( mxvTest mxv_test.cpp)
 target_link_libraries(mxvTest PUBLIC MATRIX PRIVATE GTest::gtest_main)
-target_compile_features(mxvTest PRIVATE ${TARGET_CXX_STANDARD})
+set_target_properties(mxvTest PROPERTIES ${TARGET_CXX_PARAM})
 gtest_discover_tests(mxvTest)
 
 add_executable( qrTestm qrdec_test.cpp)
 target_link_libraries(qrTestm PUBLIC MATRIX PRIVATE GTest::gtest_main)
-target_compile_features(qrTestm PRIVATE ${TARGET_CXX_STANDARD})
+set_target_properties(qrTestm PROPERTIES ${TARGET_CXX_PARAM})
 gtest_discover_tests(qrTestm)
 
 add_executable( qrSolvTest qr_solve_test.cpp)
 target_link_libraries(qrSolvTest PUBLIC MATRIX PRIVATE GTest::gtest_main)
-target_compile_features(qrSolvTest PRIVATE ${TARGET_CXX_STANDARD})
+set_target_properties(qrSolvTest PROPERTIES ${TARGET_CXX_PARAM})
 gtest_discover_tests(qrSolvTest)
 
 add_executable( implictSolvTest implictsolvers_test.cpp)
 target_link_libraries(implictSolvTest PUBLIC MATRIX PRIVATE GTest::gtest_main)
-target_compile_features(implictSolvTest PRIVATE ${TARGET_CXX_STANDARD})
+set_target_properties(implictSolvTest PROPERTIES ${TARGET_CXX_PARAM})
 gtest_discover_tests(implictSolvTest)
 
 add_executable( itTestm it_test_m.cpp)
 target_link_libraries(itTestm MATRIX)
-target_compile_features(itTestm PRIVATE ${TARGET_CXX_STANDARD})
+set_target_properties(itTestm PROPERTIES ${TARGET_CXX_PARAM})
 
 add_executable( csrTestm csr_test_m.cpp)
 target_link_libraries(csrTestm MATRIX)
-target_compile_features(csrTestm PRIVATE ${TARGET_CXX_STANDARD})
+set_target_properties(csrTestm PROPERTIES ${TARGET_CXX_PARAM})
 
 add_executable( t1Testm time_test.cpp)
 target_link_libraries(t1Testm MATRIX)
-target_compile_features(t1Testm PRIVATE ${TARGET_CXX_STANDARD})
+set_target_properties(t1Testm PROPERTIES ${TARGET_CXX_PARAM})
 
 add_executable( implictTimeTestm time_implict_measeure.cpp)
 target_link_libraries(implictTimeTestm MATRIX)
-target_compile_features(implictTimeTestm PRIVATE ${TARGET_CXX_STANDARD})
+set_target_properties(implictTimeTestm PROPERTIES ${TARGET_CXX_PARAM})
 
 add_executable( implictTimeTestme time_implict_measeure2.cpp)
 target_link_libraries(implictTimeTestme MATRIX)
-target_compile_features(implictTimeTestme PRIVATE ${TARGET_CXX_STANDARD})
+set_target_properties(implictTimeTestme PROPERTIES ${TARGET_CXX_PARAM})
 
 add_executable( ctrl test_1.cpp)
 target_link_libraries(ctrl MATRIX)
-target_compile_features(ctrl PRIVATE ${TARGET_CXX_STANDARD})
+set_target_properties(ctrl PROPERTIES ${TARGET_CXX_PARAM})
 
 set(TDEPS basicIOTest mulTest tomasTest mcsrTest mdokTest mxvTest vectorTest qrSolvTest qrTestm implictSolvTest)
 

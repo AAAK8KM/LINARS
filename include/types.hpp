@@ -1,7 +1,14 @@
 #ifndef types_hpp__
 #define types_hpp__
 
+#include <cstdint>
 namespace LINARS {
+
+template<typename dtype>
+class IMatrix;
+
+template<typename dtype>
+class IIterator;
 
 template<typename dtype>
 class Matrix;

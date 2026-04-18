@@ -103,10 +103,10 @@ class MDOK: public IMatrix<dtype>
         Iterator end()const{return MDOK<dtype>::Iterator(*this,1);}
 };
 
-#ifndef Dmdok
+/*#ifndef Dmdok
 extern template class MDOK<double>;
 extern template class MDOK<float>;
-#endif
+#endif*/
 
 }
 

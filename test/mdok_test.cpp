@@ -1,4 +1,5 @@
 #include "mdok.hpp"
+#include "matrix.hpp"
 #include <cstdint>
 #include <random>
 #include <utility>

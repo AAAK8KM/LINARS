@@ -7,6 +7,7 @@
 #include "qrsolver.hpp"
 #include <fstream>
 #include "t2m.hpp"
+#include "mvector.hpp"
 #include <cstdint>
 #include <functional>
 #include <iostream>
@@ -150,6 +151,9 @@ int main(){
 
 int main()
 {
-    MCSR<double> M = PuassonTask0<double,MCSR<double>>(5,5);
+    //MCSR<double> M = PuassonTask0<double,MCSR<double>>(5,5);
+    std::cout<<"strat\n";
+    Vector<double> M(5);
+    M=M+M;
     std::cout<<M;
 }

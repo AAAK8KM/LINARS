@@ -1,7 +1,7 @@
 #ifndef implictsolver_h__
 #define implictsolver_h__
 
-#include "imatrix.hpp"
+#include "matrixes.hpp"
 #include "t2m.hpp"
 #include <algorithm>
 #include <array>

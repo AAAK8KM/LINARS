@@ -1,7 +1,4 @@
-#include "imatrix.hpp"
-#include "m3diag.hpp"
-#include "mdok.hpp"
-#include "types.hpp"
+#include "matrixes.hpp"
 #include <iostream>
 #include <ostream>
 #include <utility>

@@ -47,10 +47,10 @@ class TomasSolver
 };
 
 
-#ifndef Dtomas
+/*#ifndef Dtomas
 extern template class TomasSolver<double>;
 extern template class TomasSolver<float>;
-#endif
+#endif*/
 
 }
 
