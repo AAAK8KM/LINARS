@@ -2,17 +2,10 @@
 #define qrdec_h__
 
 #include "matrixes.hpp"
-#include <algorithm>
-#include <cstddef>
 #include <cstdint>
-#include <functional>
-#include <iostream>
-#include <iterator>
 #include <stdexcept>
-#include <thread>
 #include <utility>
 #include <vector>
-#include <ranges>
 //#include "t2m.hpp"
 
 namespace LINARS {

@@ -7,6 +7,7 @@
 #include <cmath>
 #include <cstdint>
 #include <span>
+#include<type_traits>
 #include <stdexcept>
 
 namespace LINARS {
@@ -39,9 +40,15 @@ class Vector: public IMatrix<dtype>
 
         //Vector(std::vector<dtype>& v, bool t=0):transp(t),data(v),owns(1){}
 
-        Vector(std::vector<dtype>::iterator begin, std::vector<dtype>::iterator end, bool t=0):transp(t),data(begin,end),owns(0){}
+        //Vector(decltype(std::vector<dtype>().begin()) begin, uint32_t size, bool t=0):transp(t),data(begin,size),owns(0){}
 
+        
         Vector(dtype* begin, uint32_t size, bool t=0):transp(t),data(begin,size),owns(0){}
+
+        //                                                                      | я не вижу другого выхода, кроме как
+        //                                                                      | полностью переписать логику типов,
+        //                                                                      V но пока нет времени заниматься этим
+        Vector(const dtype* begin, uint32_t size, bool t=0):transp(t),data(const_cast<dtype*>(begin),size),owns(0){}
         
         Vector& operator=(const Vector& rhs) 
         {
@@ -49,6 +56,15 @@ class Vector: public IMatrix<dtype>
             std::copy(rhs.data.begin(), rhs.data.end(), data.begin());
             return *this;
         }
+
+
+        
+        /*Vector& operator=(const Vector<const dtype>& rhs) requires (!std::is_const_v<dtype>)
+        {
+            if (this->size().first!=rhs.size().first || this->size().second!=rhs.size().second) [[unlikely]] throw std::runtime_error("Wrong vector sizes on copy");
+            std::copy(rhs.data.begin(), rhs.data.end(), data.begin());
+            return *this;
+        }*/
 
         Vector(const Vector& rhs):transp(rhs.transp),data(new dtype[rhs.data.size()](0),rhs.data.size()),owns(1)
         {

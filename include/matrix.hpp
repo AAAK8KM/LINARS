@@ -2,6 +2,8 @@
 #define matrix_hpp__
 
 #include "imatrix.hpp"
+#include "mvector.hpp"
+#include <vector>
 
 namespace LINARS {
 
@@ -100,11 +102,11 @@ template<typename dtype>
 class VMatrix: public IMatrix<dtype>
 {
     private:
-        std::vector<Vector<dtype>> data;
+        std::vector<dtype> data;
         uint32_t n,m;
     public:
         VMatrix(){}
-        VMatrix(uint32_t n_, uint32_t m_):data(static_cast<std::size_t>(m_),Vector<dtype>(n_)),n(n_),m(m_){}
+        VMatrix(uint32_t n_, uint32_t m_):data(n_*m_),n(n_),m(m_){}
         VMatrix(std::pair<uint32_t, uint32_t> s):VMatrix(s.first,s.second){}
 
         VMatrix& operator=(const VMatrix& rhs) {
@@ -123,32 +125,27 @@ class VMatrix: public IMatrix<dtype>
             this->n=p.first;
             this->m=p.second;
 
-            this->data.resize(m,Vector<dtype>(n));
+            this->data.resize(m*n);
 
             for (auto [i,j,c] : M)
-                    this->data[j][i]=c;
+                    this->data[j*n+i]=c;
                 
         }
 
         dtype& ge(const uint32_t i, const uint32_t j)
         {
             //std::cout<<static_cast<std::size_t>(i)<<" "<<j<<std::endl;
-            return data[j][i];
+            return data[j*n+i];
         };
 
         const dtype& ge(const uint32_t i, const uint32_t j) const
         {
-            return data[j][i];
+            return data[j*n+i];
         };
         
         dtype gev(const uint32_t i, const uint32_t j) const
         {
-            return data[j][i];
-        };
-
-        Vector<dtype>& gv(const uint32_t j)
-        {
-            return data[j];
+            return data[j*n+i];
         };
 
         using IMatrix<dtype>::operator[];
@@ -161,18 +158,17 @@ class VMatrix: public IMatrix<dtype>
             return res;
         }
 
-        Vector<dtype>& operator[](const uint32_t j)
+        Vector<dtype> operator[](const uint32_t j)
         {
-            return data[j];
+            return Vector<dtype>(data.data()+j*n,n);
         };
 
-        const Vector<dtype>& operator[](const uint32_t j) const
+        const Vector<dtype> operator[](const uint32_t j) const
         {
-            return data[j];
+            return Vector<dtype>(data.data()+j*n,n);
         };
 
         inline const std::pair<uint32_t, uint32_t> size() const {return std::make_pair(n, m);};
-
 
         class Iterator: private IIterator<dtype>
         {
@@ -206,7 +202,7 @@ class VMatrix: public IMatrix<dtype>
                         //if (idx==sptr->data.size()) throw std::runtime_error("Trying to unname end pointer");
                     //std::size_t p=idx/sptr->m;
                     return std::make_tuple(static_cast<uint32_t>(it),
-                            static_cast<uint32_t>(jt),sptr->data[jt][it]);
+                            static_cast<uint32_t>(jt),sptr->data[jt*sptr->n+it]);
                 }
 
                 bool operator!=(const Iterator& itr)
@@ -216,7 +212,7 @@ class VMatrix: public IMatrix<dtype>
         };
 
         Iterator begin()const{return VMatrix<dtype>::Iterator(*this,0);}
-        Iterator end()const{return VMatrix<dtype>::Iterator(*this,this->data.size()*n);}
+        Iterator end()const{return VMatrix<dtype>::Iterator(*this,this->data.size());}
 };
 
 }

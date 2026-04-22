@@ -2,14 +2,12 @@
 #define implictsolver_h__
 
 #include "matrixes.hpp"
-#include "t2m.hpp"
+//#include "t2m.hpp"
 #include <algorithm>
 #include <array>
 #include <cstdint>
 #include <functional>
-#include <iostream>
 #include <chebishev.hpp>
-#include <ostream>
 #include <stdexcept>
 #include <tuple>
 #include <utility>

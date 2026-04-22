@@ -1,17 +1,12 @@
 #ifndef imatrix_hpp__
 #define imatrix_hpp__
 
-#include <algorithm>
 #include <cassert>
 #include <cmath>
-#include <cstddef>
 #include <cstdint>
-#include <exception>
-#include <memory>
 #include <stdexcept>
 #include <tuple>
 #include <utility>
-#include <vector>
 #include <type_traits>
 #include "types.hpp"
 
