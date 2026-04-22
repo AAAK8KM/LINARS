@@ -15,9 +15,6 @@
 
 namespace LINARS {
 
-    constexpr const uint32_t preset_max_iter=10000;
-    constexpr const long double preset_max_r=1e-9;
-
     template<typename dtype, typename Mtype>
     requires IsMatrix<dtype, Mtype>
     VMatrix<dtype> JakobiSolver(const Mtype& A, const VMatrix<dtype>& b, uint32_t max_iter=preset_max_iter, dtype max_r=preset_max_r)
@@ -248,7 +245,7 @@ namespace LINARS {
 
     template<typename dtype, typename Mtype>
     requires IsMatrix<dtype, Mtype>
-    VMatrix<dtype> SStepper(const Mtype& A, const VMatrix<dtype>& b, std::function<StepSig<dtype, Mtype>> step, dtype rho, uint32_t max_iter=preset_max_iter, dtype max_r=preset_max_r)
+    VMatrix<dtype> SStepper(const Mtype& A, const VMatrix<dtype>& b, std::function<StepSig<dtype, Mtype>> step, uint32_t max_iter=preset_max_iter, dtype max_r=preset_max_r)
     {
         if (A.size().first!=b.size().first) throw std::runtime_error("Invalid linar system");
         VMatrix<dtype> sol(b.size());

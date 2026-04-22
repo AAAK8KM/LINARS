@@ -1,3 +1,4 @@
+#include "gmres.hpp"
 #include "imatrix.hpp"
 #include "implictsolver.hpp"
 #include "implictstep.hpp"
@@ -50,6 +51,29 @@ int main()
     b[0]=A*exp[0];
     //std::cout<<A<<b<<std::endl;//<<exp<<std::endl;
     std::fstream file;
+
+file.open("gmres.csv",  std::ios_base::out);
+    if (!file.is_open()) {
+        std::cerr << "Error creating file"  << std::endl;
+        return 1;
+    }
+    //exit(0);
+    std::cout<<"start"<<std::endl;
+    auto gs = [](const MCSR<long double>& A, const VMatrix<long double>& b,const VMatrix<long double>& prev)->VMatrix<long double>{
+        return GMRES<4,long double,MCSR<long double>>(A,b,prev);
+    };
+    for (uint64_t num_t=test_it_step;num_t<=max_test_it;num_t+=test_it_step)
+    {
+        auto [res,duration] = ms_timer(SStepper<long double,MCSR<long double>>, A, b, std::function<StepSig<long double, MCSR<long double>>>(gs), num_t, 0.);
+        auto r1=sqrt((res[0]-exp[0])|(res[0]-exp[0]));
+        auto r2=sqrt((A*res[0]-b[0])|(A*res[0]-b[0]));
+        file<<num_t<<","<<r1<<","<<norm2(res[0]-exp[0])<<","<<r2<<","<<duration<<std::endl;
+        //std::cout<<res[0]<<std::endl;
+        std::cout<<"work "<<(num_t*100.)/max_test_it<<"%"<<std::endl;
+    }
+    file.close();
+    return 0;
+
     /*file.open("jacobi.csv",  std::ios_base::out);
     if (!file.is_open()) {
         std::cerr << "Error creating file"  << std::endl;
@@ -206,7 +230,7 @@ int main()
     std::cout<<"start"<<std::endl;
     for (uint64_t num_t=test_it_step;num_t<=max_test_it;num_t+=test_it_step)
     {
-        auto [res,duration] = ms_timer(SStepper<long double,MCSR<long double>>, A, b, std::function<StepSig<long double, MCSR<long double>>>(l), 1/lb_max, num_t, 0.);
+        auto [res,duration] = ms_timer(SStepper<long double,MCSR<long double>>, A, b, std::function<StepSig<long double, MCSR<long double>>>(l), num_t, 0.);
         auto r1=sqrt((res[0]-exp[0])|(res[0]-exp[0]));
         auto r2=sqrt((A*res[0]-b[0])|(A*res[0]-b[0]));
         file<<num_t<<","<<r1<<","<<norm2(res[0]-exp[0])<<","<<r2<<","<<duration<<std::endl;

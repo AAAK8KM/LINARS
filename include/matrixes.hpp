@@ -3,3 +3,4 @@
 #include "m3diag.hpp"
 #include "mcsr.hpp"
 #include "mdok.hpp"
+#include "trmatrix.hpp"

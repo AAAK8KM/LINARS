@@ -45,10 +45,14 @@ class Vector: public IMatrix<dtype>
         
         Vector(dtype* begin, uint32_t size, bool t=0):transp(t),data(begin,size),owns(0){}
 
+        Vector( uint32_t size, dtype* source, bool t=0):transp(t),data(new dtype[size](0),size),owns(1){
+            std::copy(source, source+size, data.begin());
+        }
+
         //                                                                      | я не вижу другого выхода, кроме как
         //                                                                      | полностью переписать логику типов,
         //                                                                      V но пока нет времени заниматься этим
-        Vector(const dtype* begin, uint32_t size, bool t=0):transp(t),data(const_cast<dtype*>(begin),size),owns(0){}
+        //Vector(const dtype* begin, uint32_t size, bool t=0):transp(t),data(const_cast<dtype*>(begin),size),owns(0){}
         
         Vector& operator=(const Vector& rhs) 
         {
@@ -126,6 +130,15 @@ class Vector: public IMatrix<dtype>
             for (uint32_t i=0;i<data.size();i++)
                 (v2.data)[i]-=(rhs.data)[i];
             return v2;
+        }
+
+        Vector& operator-=(const Vector &rhs)
+        {
+            if (this->transp!=rhs.transp) throw std::runtime_error("Vectors with different state");
+            if (this->data.size()!=rhs.data.size()) throw std::runtime_error("Vectors with different size can not be summurized");
+            for (uint32_t i=0;i<data.size();i++)
+                (data)[i]-=(rhs.data)[i];
+            return *this;
         }
 
         Vector operator-() const

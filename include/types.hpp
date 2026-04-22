@@ -31,6 +31,12 @@ class MDOK;
 template<typename dtype>
 class VMatrix;
 
+template<typename dtype>
+class MURtriang;
+
+constexpr const uint32_t preset_max_iter=10000;
+constexpr const long double preset_max_r=1e-9;
+
 }
 
 #endif

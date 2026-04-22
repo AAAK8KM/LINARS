@@ -163,9 +163,9 @@ class VMatrix: public IMatrix<dtype>
             return Vector<dtype>(data.data()+j*n,n);
         };
 
-        const Vector<dtype> operator[](const uint32_t j) const
+        [[nodiscard]] const Vector<dtype> operator[](const uint32_t j) const
         {
-            return Vector<dtype>(data.data()+j*n,n);
+            return Vector<dtype>(n,const_cast<dtype*>(data.data())+j*n);
         };
 
         inline const std::pair<uint32_t, uint32_t> size() const {return std::make_pair(n, m);};

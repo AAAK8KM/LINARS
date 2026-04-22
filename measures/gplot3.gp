@@ -23,4 +23,5 @@ plot 'CGD.csv'  using 5:4 smooth unique title "CGD" with points pt 7 lc rgb "red
      'sor.csv'  using 5:4 smooth unique title "SOR" with points pt 7 lc rgb "yellow", \
      'SteeperGD.csv'  using 5:4 smooth unique title "SteeperGD" with points pt 6 lc rgb "blue", \
      'gauszeidel.csv'  using 5:4 smooth unique title "GausZeidel" with points pt 6 lc rgb "green", \
-     'ssorchb.csv'  using 5:4 smooth unique title "SSOR+Cheb" with points pt 6 lc rgb "purple"
+     'ssorchb.csv'  using 5:4 smooth unique title "SSOR+Cheb" with points pt 6 lc rgb "purple", \
+     'gmres.csv'  using 5:4 smooth unique title "GMRES(4)" with points pt 2 lc rgb "black"

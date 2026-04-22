@@ -1,10 +1,13 @@
 #include "imatrix.hpp"
+#include "matrix.hpp"
 #include "mcsr.hpp"
 #include "mgenerator.hpp"
 #include "implictstep.hpp"
 #include "implictsolver.hpp"
 #include "qrdec.hpp"
 #include "qrsolver.hpp"
+#include "trmatrix.hpp"
+#include "gmres.hpp"
 #include <fstream>
 #include "t2m.hpp"
 #include "mvector.hpp"
@@ -153,7 +156,30 @@ int main()
 {
     //MCSR<double> M = PuassonTask0<double,MCSR<double>>(5,5);
     std::cout<<"strat\n";
-    Vector<double> M(5);
-    M=M+M;
-    std::cout<<M;
+    MURtriang<double> M(4,4);
+    VMatrix<double> M2(4,4);
+    M[0,0]=2;
+    M[0,1]=1;
+    M[1,1]=2;
+    M[1,2]=0;
+    M[2,2]=2;
+    M[2,3]=0;
+    M[3,3]=2;
+    Vector<double> x(4),b(4);
+    x[0]=1;
+    x[1]=1;
+    x[2]=3;
+    x[3]=4;
+    b=M*x;
+    //M2[0]=b;
+    //M2[1]=M*b;
+    //M2[2]=M*(M*b);
+    //M2[3]=M*(M*(M*b));
+    x=GMRES<7>(M, b, Vector<double>(4));
+    //std::cout<<M<<M2;
+    std::cout<<x<<std::endl;
+    x=GMRES<7>(M, b, x);
+    std::cout<<x<<std::endl;
+    std::cout<<M*x-b;
+
 }
