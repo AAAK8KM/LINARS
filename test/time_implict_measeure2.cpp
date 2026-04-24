@@ -62,9 +62,13 @@ file.open("gmres.csv",  std::ios_base::out);
     auto gs = [](const MCSR<long double>& A, const VMatrix<long double>& b,const VMatrix<long double>& prev)->VMatrix<long double>{
         return GMRES<4,long double,MCSR<long double>>(A,b,prev);
     };
+    auto D=GMRESdata<4,long double>(b.size().first);
+    auto gsr = [&D](const MCSR<long double>& A, const VMatrix<long double>& b,const VMatrix<long double>& prev)->VMatrix<long double>{
+        return GMRES_R<4,long double,MCSR<long double>>(A,b,prev,D);
+    };
     for (uint64_t num_t=test_it_step;num_t<=max_test_it;num_t+=test_it_step)
     {
-        auto [res,duration] = ms_timer(SStepper<long double,MCSR<long double>>, A, b, std::function<StepSig<long double, MCSR<long double>>>(gs), num_t, 0.);
+        auto [res,duration] = ms_timer(SStepper<long double,MCSR<long double>>, A, b, std::function<StepSig<long double, MCSR<long double>>>(gsr), num_t, 0.);
         auto r1=sqrt((res[0]-exp[0])|(res[0]-exp[0]));
         auto r2=sqrt((A*res[0]-b[0])|(A*res[0]-b[0]));
         file<<num_t<<","<<r1<<","<<norm2(res[0]-exp[0])<<","<<r2<<","<<duration<<std::endl;

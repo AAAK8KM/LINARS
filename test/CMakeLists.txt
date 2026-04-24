@@ -81,6 +81,10 @@ add_executable( implictTimeTestmm time_implict_measeure3.cpp)
 target_link_libraries(implictTimeTestmm MATRIX)
 set_target_properties(implictTimeTestmm PROPERTIES ${TARGET_CXX_PARAM})
 
+add_executable( implictTimeTestpc time_implict_measeure4.cpp)
+target_link_libraries(implictTimeTestpc MATRIX)
+set_target_properties(implictTimeTestpc PROPERTIES ${TARGET_CXX_PARAM})
+
 add_executable( ctrl test_1.cpp)
 target_link_libraries(ctrl MATRIX)
 set_target_properties(ctrl PROPERTIES ${TARGET_CXX_PARAM})

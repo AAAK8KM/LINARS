@@ -2,6 +2,8 @@
 #define implictsolver_h__
 
 #include "matrixes.hpp"
+#include "mcsr.hpp"
+#include "holetski.hpp"
 //#include "t2m.hpp"
 #include <algorithm>
 #include <array>
@@ -164,6 +166,45 @@ namespace LINARS {
                 beta=(r[i]|r[i])/rr;
                 
                 d[i]=r[i]+beta*d[i];
+                //std::cout<<(rp|(r[i]))<<" "<<(d[i]|d[i])<<std::endl;
+                mes_r=std::max(mes_r,std::sqrt(r[i]|r[i]));
+            }
+        }
+        return sol;
+    }
+
+
+    template<typename dtype, typename Mtype>
+    requires IsMatrix<dtype, Mtype>
+    VMatrix<dtype> PC_CGD(const Mtype& A, const VMatrix<dtype>& b, const MCSR<dtype>& L, uint32_t max_iter=preset_max_iter, dtype max_r=preset_max_r)
+    {
+        if (A.size().first!=b.size().first) throw std::runtime_error("Invalid linar system");
+        VMatrix<dtype> sol(b.size());
+        dtype mes_r=std::numeric_limits<dtype>::max();
+        uint32_t iter=0;
+        VMatrix<dtype> r(b.size()), d(b.size()), w(b.size());
+        //Vector<dtype> rp(b.size().first);
+        dtype alph, beta,rr;
+        for (uint32_t i=0;i<b.size().second;i++)
+        {
+            r[i]=-b[i];
+            w[i]=MulRLLT(L,r[i]);
+        }
+        d=w;
+        while (iter++<max_iter && mes_r>max_r) {
+            mes_r=0;
+            for (uint32_t i=0;i<b.size().second;i++)
+            {
+                rr=r[i]|w[i];
+                //rp=r[i];
+                alph=rr/(d[i]|(A*d[i]));
+                sol[i]=sol[i]-alph*d[i];
+                
+                r[i]=A*sol[i]-b[i];
+                w[i]=MulRLLT(L,r[i]);
+                beta=(r[i]|w[i])/rr;
+                
+                d[i]=w[i]+beta*d[i];
                 //std::cout<<(rp|(r[i]))<<" "<<(d[i]|d[i])<<std::endl;
                 mes_r=std::max(mes_r,std::sqrt(r[i]|r[i]));
             }

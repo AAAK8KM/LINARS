@@ -7,6 +7,8 @@
 #include "qrdec.hpp"
 #include "qrsolver.hpp"
 #include "trmatrix.hpp"
+#include "lvlmatrix.hpp"
+#include "holetski.hpp"
 #include "gmres.hpp"
 #include <fstream>
 #include "t2m.hpp"
@@ -152,7 +154,7 @@ int main(){
 
 }*/
 
-int main()
+/*int main()
 {
     //MCSR<double> M = PuassonTask0<double,MCSR<double>>(5,5);
     std::cout<<"strat\n";
@@ -181,5 +183,71 @@ int main()
     x=GMRES<7>(M, b, x);
     std::cout<<x<<std::endl;
     std::cout<<M*x-b;
+
+}*/
+
+/*int main()
+{
+    //MCSR<double> M = PuassonTask0<double,MCSR<double>>(5,5);
+    std::cout<<"strat\n";
+    Matrix<double> M(5,5);
+    M[0,0]=5;
+    M[0,1]=1;
+    M[0,2]=0;
+    M[0,3]=0;
+    M[0,4]=1;
+
+    M[1,0]=0;
+    M[1,1]=5;
+    M[1,2]=1;
+    M[1,3]=0;
+    M[1,4]=1;
+    
+    M[2,0]=1;
+    M[2,1]=1;
+    M[2,2]=5;
+    M[2,3]=1;
+    M[2,4]=0;
+
+    M[3,0]=0;
+    M[3,1]=0;
+    M[3,2]=1;
+    M[3,3]=5;
+    M[3,4]=0;
+
+    M[4,0]=0;
+    M[4,1]=1;
+    M[4,2]=1;
+    M[4,3]=1;
+    M[4,4]=5;
+    std::cout<<lvlmatrix<double>(M);
+
+}*/
+
+int main()
+{
+    //MCSR<double> M = PuassonTask0<double,MCSR<double>>(5,5);
+    std::cout<<"strat\n";
+    Matrix<double> M(3,3);
+    M[0,0]=4;
+    M[0,1]=-1;
+    M[0,2]=0;
+
+
+    M[1,0]=-1;
+    M[1,1]=4;
+    M[1,2]=-1;
+    
+    M[2,0]=0;
+    M[2,1]=-1;
+    M[2,2]=4;
+
+    std::cout<<holetski<double>(M);
+    Vector<double> v(3);
+    v[0]=1;
+    v[1]=2;
+    v[2]=3;
+
+     std::cout<<MulRLLT(holetski<double>(M),v);
 
 }

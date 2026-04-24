@@ -5,6 +5,7 @@
 #include "imatrix.hpp"
 #include <algorithm>
 #include <cstdint>
+#include <span>
 #include <tuple>
 #include <utility>
 #include <vector>
@@ -78,6 +79,11 @@ class MCSR: public IMatrix<dtype>
             if (j==it->first && it!=vals.begin()+rows[i+1]) return it->second;
             else return 0;
         };
+
+        std::span<const std::pair<uint32_t,dtype>> gRowSpan(uint32_t i) const
+        {
+            return std::span<const std::pair<uint32_t,dtype>>(vals.begin()+rows[i],vals.begin()+rows[i+1]);
+        }
 
         const std::pair<uint32_t, uint32_t> size() const {return  std::make_pair(n, m);}
 
