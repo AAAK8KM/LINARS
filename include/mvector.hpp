@@ -31,7 +31,6 @@ class Vector: public IMatrix<dtype>
         std::span<dtype> data;
         bool owns;
     public:
-        Vector(){}
         Vector(uint32_t n_, bool t=0):transp(t),data(new dtype[n_](0),n_),owns(1){}
 
         Vector(std::pair<uint32_t, uint32_t> s):transp(s.first<s.second),

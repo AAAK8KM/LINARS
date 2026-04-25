@@ -45,7 +45,7 @@ int main()
     }*/
     for (std::size_t i=0;i<size;i++)
     {
-        exp[0][i]=sin((i+0.)/s+i%s);
+        exp[0][i]=((i+0.)/s)*(i%s);//sin((i+0.)/s+i%s);
     }
     MCSR<long double> A=PuassonTask0<long double,MCSR<long double>>(s,s);
     b[0]=A*exp[0];
@@ -76,7 +76,6 @@ file.open("gmres.csv",  std::ios_base::out);
         std::cout<<"work "<<(num_t*100.)/max_test_it<<"%"<<std::endl;
     }
     file.close();
-    return 0;
 
     /*file.open("jacobi.csv",  std::ios_base::out);
     if (!file.is_open()) {

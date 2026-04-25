@@ -4,12 +4,14 @@
 #include "matrixes.hpp"
 #include "mcsr.hpp"
 #include "holetski.hpp"
-//#include "t2m.hpp"
+#include "t2m.hpp"
+#include "fstream"
 #include <algorithm>
 #include <array>
 #include <cstdint>
 #include <functional>
 #include <chebishev.hpp>
+#include <iostream>
 #include <stdexcept>
 #include <tuple>
 #include <utility>
@@ -102,12 +104,14 @@ namespace LINARS {
         VMatrix<dtype> sol(b.size());
         dtype mes_r=std::numeric_limits<dtype>::max();
         uint32_t iter=0;
+        //std::fstream file("SimpleV.csv",  std::ios_base::out);
         while (iter++<max_iter && mes_r>max_r) {
             mes_r=0;
             for (uint32_t i=0;i<b.size().second;i++)
             {
                 Vector<dtype> r=A*sol[i]-b[i];
                 sol[i]=sol[i]-r*tau;
+                //file<<sol[i]<<std::endl;
                 mes_r=std::max(mes_r,std::sqrt(r|r));
             }
         }
@@ -122,6 +126,7 @@ namespace LINARS {
         VMatrix<dtype> sol(b.size());
         dtype mes_r=std::numeric_limits<dtype>::max();
         uint32_t iter=0;
+        //std::fstream file("SGDV.csv",  std::ios_base::out);
         Vector<dtype> r(b.size().first);
         while (iter++<max_iter && mes_r>max_r) {
             mes_r=0;
@@ -131,6 +136,7 @@ namespace LINARS {
                 dtype tau=(r|r)/(r|(A*r));
                 if (!(tau==tau)) break;
                 sol[i]=sol[i]-r*tau;
+                //file<<sol[i]<<std::endl;
                 mes_r=std::max(mes_r,std::sqrt(r|r));
             }
         }
@@ -146,6 +152,7 @@ namespace LINARS {
         dtype mes_r=std::numeric_limits<dtype>::max();
         uint32_t iter=0;
         VMatrix<dtype> r(b.size()), d(b.size());
+        //std::fstream file("CGDV.csv",  std::ios_base::out);
         //Vector<dtype> rp(b.size().first);
         dtype alph, beta,rr;
         for (uint32_t i=0;i<b.size().second;i++)
@@ -161,7 +168,7 @@ namespace LINARS {
                 //rp=r[i];
                 alph=rr/(d[i]|(A*d[i]));
                 sol[i]=sol[i]-alph*d[i];
-                
+                //file<<sol[i]<<std::endl;
                 r[i]=A*sol[i]-b[i];
                 beta=(r[i]|r[i])/rr;
                 

@@ -89,6 +89,10 @@ add_executable( ctrl test_1.cpp)
 target_link_libraries(ctrl MATRIX)
 set_target_properties(ctrl PROPERTIES ${TARGET_CXX_PARAM})
 
+add_executable( ctrl2 test_2.cpp)
+target_link_libraries(ctrl2 MATRIX)
+set_target_properties(ctrl2 PROPERTIES ${TARGET_CXX_PARAM})
+
 set(TDEPS basicIOTest mulTest tomasTest mcsrTest mdokTest mxvTest vectorTest qrSolvTest qrTestm implictSolvTest)
 
 set(TEST_CONFIGS
